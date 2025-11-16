@@ -1,0 +1,11 @@
+{
+  "name": "constitutional-shrinkage-examples",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "demo": "tsx demo-full-workflow.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0"
+  }
+}

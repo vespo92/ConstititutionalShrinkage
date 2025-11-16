@@ -1,0 +1,18 @@
+{
+  "name": "@constitutional-shrinkage/citizen-portal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Direct democracy interface - GitHub-style governance participation for all citizens",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "echo 'Citizen portal dev server'",
+    "build": "echo 'Building citizen portal'",
+    "test": "echo 'Testing citizen portal'",
+    "lint": "echo 'Linting citizen portal'"
+  },
+  "dependencies": {
+    "@constitutional-shrinkage/governance-utils": "*",
+    "@constitutional-shrinkage/voting-system": "*",
+    "@constitutional-shrinkage/constitutional-framework": "*"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "@constitutional-shrinkage/supply-chain",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Regional supply chain management - Incentivize local production with exponential distance taxation",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "echo 'Supply chain dev server'",
+    "build": "echo 'Building supply chain app'",
+    "test": "echo 'Testing supply chain app'",
+    "lint": "echo 'Linting supply chain app'"
+  },
+  "dependencies": {
+    "@constitutional-shrinkage/governance-utils": "*",
+    "@constitutional-shrinkage/metrics": "*"
+  }
+}

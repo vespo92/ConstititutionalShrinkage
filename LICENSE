@@ -1,0 +1,67 @@
+MIT License
+
+Copyright (c) 2025 Constitutional Shrinkage Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+## Additional Terms
+
+This project is dedicated to the public good and the advancement of democratic
+governance. While the code is freely available under the MIT License, we ask
+that users of this software:
+
+1. **Maintain Democratic Principles**: Use this software to advance democratic
+   governance, transparency, and citizen empowerment.
+
+2. **Respect Human Rights**: Do not use this software to violate human rights,
+   enable authoritarian regimes, or suppress individual freedoms.
+
+3. **Attribute Properly**: Give credit to the Constitutional Shrinkage project
+   and its contributors when using or adapting this software.
+
+4. **Share Improvements**: We encourage (but do not require) sharing
+   improvements and adaptations back to the community.
+
+5. **International Use**: This software may be adapted for use in other
+   countries and governance systems. We encourage international collaboration
+   and knowledge sharing.
+
+These additional terms are requests, not legal requirements. The MIT License
+above governs the legal use of this software.
+
+---
+
+## Documentation License
+
+All documentation in this repository (files in `/docs` and markdown files) is
+licensed under the Creative Commons Attribution 4.0 International License
+(CC BY 4.0).
+
+You are free to:
+- Share — copy and redistribute the material
+- Adapt — remix, transform, and build upon the material
+
+Under the following terms:
+- Attribution — You must give appropriate credit to Constitutional Shrinkage
+
+---
+
+**For the People. For the Planet. For the Future.**

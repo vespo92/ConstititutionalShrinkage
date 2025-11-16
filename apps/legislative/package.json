@@ -1,0 +1,18 @@
+{
+  "name": "@constitutional-shrinkage/legislative",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Decentralized legislative system - Git-style bill proposals, branching, merging, and voting",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "echo 'Legislative app dev server'",
+    "build": "echo 'Building legislative app'",
+    "test": "echo 'Testing legislative app'",
+    "lint": "echo 'Linting legislative app'"
+  },
+  "dependencies": {
+    "@constitutional-shrinkage/governance-utils": "*",
+    "@constitutional-shrinkage/voting-system": "*",
+    "@constitutional-shrinkage/constitutional-framework": "*"
+  }
+}

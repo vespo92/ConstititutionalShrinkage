@@ -1,0 +1,11 @@
+{
+  "name": "@constitutional-shrinkage/constitutional-framework",
+  "version": "0.1.0",
+  "description": "Core constitutional framework and immutable rights",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "echo 'Building constitutional-framework'",
+    "test": "echo 'Testing constitutional-framework'",
+    "lint": "echo 'Linting constitutional-framework'"
+  }
+}

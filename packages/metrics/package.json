@@ -1,0 +1,14 @@
+{
+  "name": "@constitutional-shrinkage/metrics",
+  "version": "0.1.0",
+  "description": "Triple bottom line metrics - People, Planet, Profit tracking",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "echo 'Building metrics'",
+    "test": "echo 'Testing metrics'",
+    "lint": "echo 'Linting metrics'"
+  },
+  "dependencies": {
+    "@constitutional-shrinkage/governance-utils": "*"
+  }
+}

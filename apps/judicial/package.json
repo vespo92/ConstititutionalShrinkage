@@ -1,0 +1,17 @@
+{
+  "name": "@constitutional-shrinkage/judicial",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Reformed judicial system - Smart contracts, AI-assisted rulings, and decriminalization",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "echo 'Judicial app dev server'",
+    "build": "echo 'Building judicial app'",
+    "test": "echo 'Testing judicial app'",
+    "lint": "echo 'Linting judicial app'"
+  },
+  "dependencies": {
+    "@constitutional-shrinkage/governance-utils": "*",
+    "@constitutional-shrinkage/constitutional-framework": "*"
+  }
+}

@@ -72,6 +72,10 @@ A **turborepo monorepo** containing a complete reimagining of American governanc
 2. **[Governance Utilities](./packages/governance-utils)** - Shared governance functions
 3. **[Voting System](./packages/voting-system)** - Secure, transparent voting with liquid democracy
 4. **[Metrics](./packages/metrics)** - Triple bottom line tracking (People, Planet, Profit)
+5. **[Business Transparency](./packages/business-transparency)** - Replaces EEO with radical transparency
+   - Employment lifecycle tracking (every hire/fire decision public)
+   - Complete supply chain transparency (raw materials to consumer)
+   - Progressive tax system (up to 85% for billionaires)
 
 ### 📚 Documentation (`/docs`)
 
@@ -80,6 +84,7 @@ A **turborepo monorepo** containing a complete reimagining of American governanc
 - **[2030 Transition Roadmap](./docs/roadmap/2030-transition-plan.md)** - How we get there
 - **[System Architecture](./docs/architecture/system-overview.md)** - Technical design
 - **[Migration Strategy](./docs/migration/transition-strategy.md)** - Transition plan
+- **[Transparency Philosophy](./docs/TRANSPARENCY-PHILOSOPHY.md)** - Replacing EEO/bureaucracy with radical transparency
 
 ---
 

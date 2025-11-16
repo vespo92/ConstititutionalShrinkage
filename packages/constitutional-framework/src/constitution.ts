@@ -57,12 +57,20 @@ export const IMMUTABLE_RIGHTS: Right[] = [
   {
     id: 'right-003',
     category: RightCategory.PRIVACY,
-    title: 'Right to Privacy and Data Ownership',
+    title: 'Right to Privacy in the Home',
     description:
-      'Individuals own their personal data and have the right to privacy in their personal affairs.',
+      'Privacy exists only within the home. All business operations, employment, and economic activity are fully transparent. ' +
+      'Individuals have privacy in their personal homes and personal affairs, but no privacy in business, employment, or public activities.',
     level: GovernanceLevel.IMMUTABLE,
     enforceable: true,
-    exceptions: [],
+    exceptions: [
+      {
+        id: 'exception-004',
+        condition: 'Business and employment activities are fully public',
+        justification: 'Society has the right to transparency in all economic activity',
+        requiredApprovalLevel: GovernanceLevel.IMMUTABLE,
+      },
+    ],
     createdAt: new Date('2025-01-01'),
     lastModified: new Date('2025-01-01'),
   },
@@ -104,6 +112,28 @@ export const IMMUTABLE_RIGHTS: Right[] = [
         condition: 'Eminent domain with fair market compensation',
         justification: 'Public infrastructure may require property acquisition',
         requiredApprovalLevel: GovernanceLevel.FEDERAL,
+      },
+    ],
+    createdAt: new Date('2025-01-01'),
+    lastModified: new Date('2025-01-01'),
+  },
+  {
+    id: 'right-007',
+    category: RightCategory.BUSINESS_TRANSPARENCY,
+    title: 'Right to Business Transparency',
+    description:
+      'All businesses must disclose all employment decisions, supply chain origins, and business operations publicly. ' +
+      'Society has the right to know who businesses hire, fire, and why. Complete supply chain transparency from raw materials to finished products is mandatory. ' +
+      'No privacy exists for business operations - only brutal honesty. Market forces, not bureaucratic regulations, determine acceptable behavior. ' +
+      'This right replaces all EEO regulations with radical transparency.',
+    level: GovernanceLevel.IMMUTABLE,
+    enforceable: true,
+    exceptions: [
+      {
+        id: 'exception-003',
+        condition: 'Personal home privacy',
+        justification: 'Privacy exists only within the home - all business operations are public',
+        requiredApprovalLevel: GovernanceLevel.IMMUTABLE,
       },
     ],
     createdAt: new Date('2025-01-01'),

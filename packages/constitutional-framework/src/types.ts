@@ -10,6 +10,7 @@ export enum RightCategory {
   ANTI_COERCION = 'anti_coercion',
   FREEDOM_OF_EXPRESSION = 'freedom_of_expression',
   PRIVACY = 'privacy',
+  BUSINESS_TRANSPARENCY = 'business_transparency',
 }
 
 export enum GovernanceLevel {

@@ -1,0 +1,30 @@
+{
+  "name": "@constitutional-shrinkage/business-transparency",
+  "version": "1.0.0",
+  "description": "Business transparency system replacing EEO regulations with radical honesty and full supply chain tracking",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "lint": "eslint src --ext .ts"
+  },
+  "keywords": [
+    "transparency",
+    "employment",
+    "supply-chain",
+    "business",
+    "accountability",
+    "progressive-tax"
+  ],
+  "author": "Constitutional Shrinkage Contributors",
+  "license": "MIT",
+  "dependencies": {
+    "@constitutional-shrinkage/constitutional-framework": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

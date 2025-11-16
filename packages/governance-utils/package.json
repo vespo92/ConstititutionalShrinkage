@@ -1,0 +1,14 @@
+{
+  "name": "@constitutional-shrinkage/governance-utils",
+  "version": "0.1.0",
+  "description": "Shared utilities for governance operations across all apps",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "echo 'Building governance-utils'",
+    "test": "echo 'Testing governance-utils'",
+    "lint": "echo 'Linting governance-utils'"
+  },
+  "dependencies": {
+    "@constitutional-shrinkage/constitutional-framework": "*"
+  }
+}

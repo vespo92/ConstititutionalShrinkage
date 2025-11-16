@@ -1,0 +1,15 @@
+{
+  "name": "@constitutional-shrinkage/voting-system",
+  "version": "0.1.0",
+  "description": "Secure, transparent voting system with liquid democracy support",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "echo 'Building voting-system'",
+    "test": "echo 'Testing voting-system'",
+    "lint": "echo 'Linting voting-system'"
+  },
+  "dependencies": {
+    "@constitutional-shrinkage/constitutional-framework": "*",
+    "@constitutional-shrinkage/governance-utils": "*"
+  }
+}

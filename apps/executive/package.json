@@ -1,0 +1,18 @@
+{
+  "name": "@constitutional-shrinkage/executive",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Decentralized executive functions - Regional execution with federal coordination",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "echo 'Executive app dev server'",
+    "build": "echo 'Building executive app'",
+    "test": "echo 'Testing executive app'",
+    "lint": "echo 'Linting executive app'"
+  },
+  "dependencies": {
+    "@constitutional-shrinkage/governance-utils": "*",
+    "@constitutional-shrinkage/constitutional-framework": "*",
+    "@constitutional-shrinkage/metrics": "*"
+  }
+}

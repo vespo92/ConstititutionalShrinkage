@@ -79,12 +79,23 @@ A **turborepo monorepo** containing a complete reimagining of American governanc
 
 ### 📚 Documentation (`/docs`)
 
+#### Strategic Planning
+- **[2030 Transition Roadmap](./docs/roadmap/2030-transition-plan.md)** - How we get there
+- **[Implementation Roadmap](./docs/IMPLEMENTATION_ROADMAP.md)** - .git for Government implementation
+- **[Next Steps](./docs/NEXT-STEPS.md)** - Immediate priorities and action items
+- **[Transparency Philosophy](./docs/TRANSPARENCY-PHILOSOPHY.md)** - Radical transparency over regulation
+
+#### Technical Documentation
+- **[API Reference](./docs/api/README.md)** - Complete package API documentation
+- **[Application Designs](./docs/applications/README.md)** - Design specs for all 6 apps
+- **[Development Setup](./docs/development/setup-guide.md)** - Local dev environment guide
+- **[Data Models](./docs/data-models/README.md)** - Entity relationships and schemas
+
+#### Architecture & Mapping
+- **[System Architecture](./docs/architecture/system-overview.md)** - Technical design
 - **[Current Government Mapping](./docs/mapping/current-government-structure.md)** - What we're replacing
 - **[New Government Structure](./docs/mapping/new-government-structure.md)** - What we're building
-- **[2030 Transition Roadmap](./docs/roadmap/2030-transition-plan.md)** - How we get there
-- **[System Architecture](./docs/architecture/system-overview.md)** - Technical design
 - **[Migration Strategy](./docs/migration/transition-strategy.md)** - Transition plan
-- **[Transparency Philosophy](./docs/TRANSPARENCY-PHILOSOPHY.md)** - Replacing EEO/bureaucracy with radical transparency
 
 ---
 
@@ -244,10 +255,14 @@ constitutional-shrinkage/
 │   └── metrics/                   # Triple bottom line tracking
 │
 ├── docs/                    # Documentation
-│   ├── mapping/             # Government structure maps
-│   ├── roadmap/             # Implementation timeline
+│   ├── api/                 # Package API reference
+│   ├── applications/        # Application design specs
 │   ├── architecture/        # Technical architecture
-│   └── migration/           # Transition strategy
+│   ├── data-models/         # Entity diagrams & schemas
+│   ├── development/         # Developer guides
+│   ├── mapping/             # Government structure maps
+│   ├── migration/           # Transition strategy
+│   └── roadmap/             # Implementation timeline
 │
 ├── package.json             # Root package configuration
 ├── turbo.json              # Turborepo configuration
@@ -290,7 +305,7 @@ This is an open-source movement. We need:
 - Media outreach
 - Grassroots organizing
 
-See `CONTRIBUTING.md` (coming soon) for details.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.
 
 ---
 

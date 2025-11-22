@@ -16,3 +16,9 @@ export * from './change-tracking';
 
 // Government data types
 export * from './government-data';
+
+// Governance levels and jurisdictions
+export * from './governance-levels';
+
+// Documenter and verification system
+export * from './documenter';

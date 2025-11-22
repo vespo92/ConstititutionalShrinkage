@@ -492,9 +492,10 @@ Each agent should produce an estimation report:
 
 | Agent | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| Agent_1 | `claude/agent-1-legislative-app` | NOT_STARTED | 0% |
-| Agent_2 | `claude/agent-2-citizen-portal` | NOT_STARTED | 0% |
 | Agent_3 | `claude/agent-3-deployment-docs-*` | COMPLETE | 100% |
+| Agent_1 | `claude/agent-1-deployment-docs-01Da1ZfRyCG7avi4QxYpvgh3` | COMPLETE | 100% |
+| Agent_2 | `claude/agent-2-deployment-docs-01Ya5XVQB6kwfpoMqegSKdNA` | COMPLETE | 100% |
+| Agent_3 | `claude/agent-3-database-schema` | NOT_STARTED | 0% |
 | Agent_4 | `claude/agent-4-testing-suite` | NOT_STARTED | 0% |
 | Agent_5 | `claude/agent-5-api-services` | NOT_STARTED | 0% |
 

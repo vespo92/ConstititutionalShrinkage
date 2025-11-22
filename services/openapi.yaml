@@ -1,0 +1,551 @@
+openapi: 3.0.3
+info:
+  title: Constitutional Shrinkage API
+  description: |
+    API for the Constitutional Shrinkage platform - a git-style decentralized government system.
+
+    ## Authentication
+    Most endpoints require JWT authentication. Include the token in the Authorization header:
+    ```
+    Authorization: Bearer <token>
+    ```
+
+    ## Rate Limiting
+    - Standard rate limit: 100 requests per minute
+    - Authenticated users: 200 requests per minute
+    - Burst allowance: 10 requests
+
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: api@constitutional-shrinkage.gov
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3001
+    description: Development
+  - url: https://api.constitutional-shrinkage.gov
+    description: Production
+
+tags:
+  - name: Bills
+    description: Legislation management operations
+  - name: Votes
+    description: Voting and vote verification
+  - name: Users
+    description: User profile and activity management
+  - name: Delegations
+    description: Liquid democracy delegation management
+  - name: Regions
+    description: Regional governance
+  - name: Auth
+    description: Authentication and authorization
+  - name: Search
+    description: Full-text search
+  - name: Notifications
+    description: Notification management
+
+paths:
+  /api/bills:
+    get:
+      tags: [Bills]
+      summary: List bills with filters
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [DRAFT, IN_COMMITTEE, SCHEDULED, VOTING, PASSED, REJECTED, ACTIVE, EXPIRED]
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: region
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: List of bills
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillListResponse'
+    post:
+      tags: [Bills]
+      summary: Create a new bill
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBillRequest'
+      responses:
+        '201':
+          description: Bill created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillCreatedResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/bills/{id}:
+    get:
+      tags: [Bills]
+      summary: Get bill details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Bill details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bill'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/bills/{id}/vote:
+    post:
+      tags: [Bills, Votes]
+      summary: Cast a vote on a bill
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CastVoteRequest'
+      responses:
+        '201':
+          description: Vote cast successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoteReceipt'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: Already voted
+
+  /api/delegations:
+    get:
+      tags: [Delegations]
+      summary: List user's delegations
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: direction
+          in: query
+          schema:
+            type: string
+            enum: [outgoing, incoming, both]
+            default: both
+      responses:
+        '200':
+          description: List of delegations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DelegationListResponse'
+    post:
+      tags: [Delegations]
+      summary: Create a delegation
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDelegationRequest'
+      responses:
+        '201':
+          description: Delegation created
+        '400':
+          description: Invalid delegation (circular, self-delegation, etc.)
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid credentials
+
+  /search:
+    get:
+      tags: [Search]
+      summary: Global search
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [bills, people, organizations, all]
+            default: all
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 50
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Bill:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        content:
+          type: string
+        status:
+          type: string
+          enum: [DRAFT, IN_COMMITTEE, SCHEDULED, VOTING, PASSED, REJECTED, ACTIVE, EXPIRED]
+        level:
+          type: string
+          enum: [IMMUTABLE, FEDERAL, REGIONAL, LOCAL]
+        sponsorId:
+          type: string
+          format: uuid
+        categoryId:
+          type: string
+        regionId:
+          type: string
+          format: uuid
+        sunsetDate:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    BillListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Bill'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    CreateBillRequest:
+      type: object
+      required: [title, content, level, categoryId]
+      properties:
+        title:
+          type: string
+          minLength: 5
+          maxLength: 200
+        content:
+          type: string
+          minLength: 10
+        level:
+          type: string
+          enum: [IMMUTABLE, FEDERAL, REGIONAL, LOCAL]
+        categoryId:
+          type: string
+        regionId:
+          type: string
+          format: uuid
+        sunsetYears:
+          type: integer
+          default: 5
+          minimum: 1
+          maximum: 20
+
+    BillCreatedResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        message:
+          type: string
+
+    CastVoteRequest:
+      type: object
+      required: [choice]
+      properties:
+        choice:
+          type: string
+          enum: [for, against, abstain]
+        isPublic:
+          type: boolean
+          default: false
+        signature:
+          type: string
+
+    VoteReceipt:
+      type: object
+      properties:
+        voteId:
+          type: string
+          format: uuid
+        billId:
+          type: string
+          format: uuid
+        choice:
+          type: string
+        weight:
+          type: number
+        receipt:
+          type: string
+          description: Cryptographic proof
+        timestamp:
+          type: string
+          format: date-time
+
+    CreateDelegationRequest:
+      type: object
+      required: [delegateId, scope]
+      properties:
+        delegateId:
+          type: string
+          format: uuid
+        scope:
+          type: string
+          enum: [ALL, CATEGORY, SINGLE_BILL]
+        category:
+          type: string
+          description: Required if scope is CATEGORY
+        billId:
+          type: string
+          format: uuid
+          description: Required if scope is SINGLE_BILL
+        expiresAt:
+          type: string
+          format: date-time
+
+    DelegationListResponse:
+      type: object
+      properties:
+        outgoing:
+          type: array
+          items:
+            $ref: '#/components/schemas/Delegation'
+        incoming:
+          type: array
+          items:
+            $ref: '#/components/schemas/Delegation'
+        summary:
+          type: object
+          properties:
+            totalOutgoing:
+              type: integer
+            totalIncoming:
+              type: integer
+            effectiveVotingPower:
+              type: number
+
+    Delegation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        delegatorId:
+          type: string
+          format: uuid
+        delegateId:
+          type: string
+          format: uuid
+        scope:
+          type: string
+          enum: [ALL, CATEGORY, SINGLE_BILL]
+        category:
+          type: string
+        active:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+            email:
+              type: string
+            verificationLevel:
+              type: string
+            votingPower:
+              type: number
+
+    SearchResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+              title:
+                type: string
+              description:
+                type: string
+              score:
+                type: number
+              highlights:
+                type: array
+                items:
+                  type: string
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        totalPages:
+          type: integer
+        facets:
+          type: object
+        took:
+          type: integer
+          description: Query time in milliseconds
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        requestId:
+          type: string
+
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Access denied
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

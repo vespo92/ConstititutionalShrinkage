@@ -1,0 +1,1423 @@
+// Constitutional Shrinkage - Prisma Schema
+// Agent 3: Database & Schema Infrastructure
+// Generated: 2025-11-22
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [uuid_ossp(map: "uuid-ossp"), pgcrypto]
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum VerificationLevel {
+  UNVERIFIED
+  EMAIL_VERIFIED
+  ID_VERIFIED
+  BIOMETRIC
+  FULL_KYC
+}
+
+enum PersonStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  DECEASED
+  EMIGRATED
+}
+
+enum ExpertiseLevel {
+  NOVICE
+  INTERMEDIATE
+  EXPERT
+  AUTHORITY
+}
+
+enum OrganizationType {
+  FEDERAL_GOVERNMENT
+  STATE_GOVERNMENT
+  LOCAL_GOVERNMENT
+  GOVERNMENT_AGENCY
+  GOVERNMENT_CORPORATION
+  LEGISLATIVE_BODY
+  JUDICIAL_BODY
+  EXECUTIVE_BRANCH
+  REGULATORY_AGENCY
+  LAW_ENFORCEMENT
+  MILITARY
+  CORPORATION
+  LLC
+  PARTNERSHIP
+  SOLE_PROPRIETORSHIP
+  COOPERATIVE
+  B_CORPORATION
+  PUBLIC_BENEFIT_CORP
+  HOLDING_COMPANY
+  SUBSIDIARY
+  JOINT_VENTURE
+  NONPROFIT_501C3
+  NONPROFIT_501C4
+  FOUNDATION
+  CHARITY
+  RELIGIOUS_ORG
+  EDUCATIONAL_INSTITUTION
+  RESEARCH_INSTITUTION
+  POLITICAL_PARTY
+  PAC
+  SUPER_PAC
+  LOBBYING_FIRM
+  CAMPAIGN_COMMITTEE
+  ADVOCACY_GROUP
+  LABOR_UNION
+  TRADE_ASSOCIATION
+  PROFESSIONAL_ASSOCIATION
+  GUILD
+  BANK
+  CREDIT_UNION
+  INVESTMENT_FUND
+  HEDGE_FUND
+  PRIVATE_EQUITY
+  VENTURE_CAPITAL
+  INSURANCE_COMPANY
+  TRUST
+  ESTATE
+}
+
+enum OrganizationStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  DISSOLVED
+  MERGED
+  ACQUIRED
+  BANKRUPT
+  UNDER_INVESTIGATION
+}
+
+enum GovernanceLevel {
+  IMMUTABLE
+  FEDERAL
+  REGIONAL
+  LOCAL
+}
+
+enum BillStatus {
+  DRAFT
+  IN_COMMITTEE
+  SCHEDULED
+  VOTING
+  PASSED
+  REJECTED
+  VETOED
+  ACTIVE
+  REPEALED
+  EXPIRED
+}
+
+enum AmendmentStatus {
+  PROPOSED
+  UNDER_REVIEW
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+  MERGED
+}
+
+enum VoteChoice {
+  FOR
+  AGAINST
+  ABSTAIN
+  NOT_VOTING
+  PRESENT
+}
+
+enum VotingStatus {
+  PENDING
+  ACTIVE
+  CLOSED
+  FINALIZED
+  CANCELLED
+}
+
+enum DelegationScope {
+  ALL
+  CATEGORY
+  SINGLE_BILL
+}
+
+enum SignificanceLevel {
+  PRIMARY
+  SECONDARY
+  SUPPORTING
+  PERIPHERAL
+}
+
+enum ConflictType {
+  FINANCIAL_INTEREST
+  EMPLOYMENT
+  FAMILY_RELATIONSHIP
+  CAMPAIGN_CONTRIBUTION
+  LOBBYING_RELATIONSHIP
+  BOARD_MEMBERSHIP
+  OWNERSHIP_STAKE
+  CONTRACTUAL
+  REVOLVING_DOOR
+}
+
+enum ConflictSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum ConflictStatus {
+  DETECTED
+  DISCLOSED
+  RECUSED
+  WAIVED
+  VIOLATED
+}
+
+enum MetricCategory {
+  PEOPLE
+  PLANET
+  PROFIT
+}
+
+enum ChangeType {
+  CREATE
+  UPDATE
+  DELETE
+  RESTORE
+  ARCHIVE
+  MERGE
+  FORK
+  STATUS_CHANGE
+}
+
+enum TrackedEntityType {
+  PERSON
+  ORGANIZATION
+  BILL
+  AMENDMENT
+  VOTE
+  DELEGATION
+  ASSOCIATION
+  COMMITTEE
+  DOCUMENT
+  REGION
+  CATEGORY
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  DISPUTED
+  REJECTED
+}
+
+// ============================================================================
+// CORE ENTITIES
+// ============================================================================
+
+model Region {
+  id             String          @id @default(uuid()) @db.Uuid
+  name           String          @db.VarChar(255)
+  code           String          @unique @db.VarChar(50)
+  level          GovernanceLevel @default(LOCAL)
+  parentRegionId String?         @map("parent_region_id") @db.Uuid
+
+  latitude       Decimal?  @db.Decimal(10, 8)
+  longitude      Decimal?  @db.Decimal(11, 8)
+  boundaryGeoJson Json?    @map("boundary_geojson")
+  population     BigInt?
+  timezone       String?   @db.VarChar(50)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdBy String?   @map("created_by") @db.Uuid
+
+  // Relations
+  parentRegion  Region?   @relation("RegionHierarchy", fields: [parentRegionId], references: [id])
+  childRegions  Region[]  @relation("RegionHierarchy")
+  persons       Person[]  @relation("PrimaryRegion")
+  personRegions PersonRegion[]
+  organizations OrganizationRegion[]
+  bills         Bill[]
+  committees    Committee[]
+  metricValues  MetricValue[]
+
+  @@map("regions")
+}
+
+model Person {
+  id        String @id @default(uuid()) @db.Uuid
+  publicKey String @unique @map("public_key")
+
+  legalName     String    @map("legal_name") @db.VarChar(255)
+  preferredName String?   @map("preferred_name") @db.VarChar(255)
+  dateOfBirth   DateTime  @map("date_of_birth") @db.Date
+  placeOfBirth  String?   @map("place_of_birth") @db.VarChar(255)
+
+  contactEmail String  @unique @map("contact_email") @db.VarChar(255)
+  contactPhone String? @map("contact_phone") @db.VarChar(50)
+
+  primaryRegionId String @map("primary_region_id") @db.Uuid
+
+  verificationLevel VerificationLevel @default(UNVERIFIED) @map("verification_level")
+  verificationDate  DateTime?         @map("verification_date") @db.Timestamptz(6)
+  verifiedById      String?           @map("verified_by") @db.Uuid
+
+  votingPower Decimal @default(1.0) @map("voting_power") @db.Decimal(10, 4)
+  reputation  Decimal @default(50.0) @db.Decimal(5, 2)
+
+  status       PersonStatus @default(ACTIVE)
+  statusReason String?      @map("status_reason")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdBy String?   @map("created_by") @db.Uuid
+
+  metadata Json @default("{}") @db.JsonB
+
+  // Relations
+  primaryRegion     Region  @relation("PrimaryRegion", fields: [primaryRegionId], references: [id])
+  verifiedBy        Person? @relation("PersonVerification", fields: [verifiedById], references: [id])
+  verifiedPersons   Person[] @relation("PersonVerification")
+
+  regions           PersonRegion[]
+  expertise         PersonExpertise[]
+  endorsementsGiven Endorsement[]     @relation("Endorser")
+  endorsementsReceived Endorsement[] @relation("Endorsee")
+
+  sponsoredBills    Bill[]            @relation("BillSponsor")
+  cosponsoredBills  BillCosponsor[]
+  proposedAmendments Amendment[]
+  votes             Vote[]
+  delegationsGiven  Delegation[]      @relation("Delegator")
+  delegationsReceived Delegation[]    @relation("Delegate")
+
+  committeeMembers  CommitteeMember[]
+  associations      Association[]     @relation("AssociationCreator")
+  conflictsOfInterest ConflictOfInterest[]
+  changeRecords     ChangeRecord[]
+
+  @@map("persons")
+}
+
+model PersonRegion {
+  personId  String   @map("person_id") @db.Uuid
+  regionId  String   @map("region_id") @db.Uuid
+  isPrimary Boolean  @default(false) @map("is_primary")
+  joinedAt  DateTime @default(now()) @map("joined_at") @db.Timestamptz(6)
+
+  person Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+  region Region @relation(fields: [regionId], references: [id], onDelete: Cascade)
+
+  @@id([personId, regionId])
+  @@map("person_regions")
+}
+
+model PersonExpertise {
+  id       String         @id @default(uuid()) @db.Uuid
+  personId String         @map("person_id") @db.Uuid
+  category String         @db.VarChar(100)
+  level    ExpertiseLevel @default(NOVICE)
+  score    Decimal        @default(0) @db.Decimal(5, 2)
+  verifiedCredentials String[] @map("verified_credentials")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  person Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@unique([personId, category])
+  @@map("person_expertise")
+}
+
+model Endorsement {
+  id         String   @id @default(uuid()) @db.Uuid
+  endorserId String   @map("endorser_id") @db.Uuid
+  endorseeId String   @map("endorsee_id") @db.Uuid
+  category   String   @db.VarChar(100)
+  statement  String
+  weight     Decimal  @default(1.0) @db.Decimal(5, 2)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  endorser Person @relation("Endorser", fields: [endorserId], references: [id], onDelete: Cascade)
+  endorsee Person @relation("Endorsee", fields: [endorseeId], references: [id], onDelete: Cascade)
+
+  @@unique([endorserId, endorseeId, category])
+  @@map("endorsements")
+}
+
+model Address {
+  id         String   @id @default(uuid()) @db.Uuid
+  street1    String   @db.VarChar(255)
+  street2    String?  @db.VarChar(255)
+  city       String   @db.VarChar(100)
+  state      String   @db.VarChar(100)
+  postalCode String   @map("postal_code") @db.VarChar(20)
+  country    String   @default("USA") @db.VarChar(100)
+  latitude   Decimal? @db.Decimal(10, 8)
+  longitude  Decimal? @db.Decimal(11, 8)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  organizations    Organization[]
+  registeredAgents RegisteredAgent[]
+
+  @@map("addresses")
+}
+
+model Organization {
+  id                 String             @id @default(uuid()) @db.Uuid
+  registrationNumber String             @unique @map("registration_number") @db.VarChar(100)
+  taxId              String?            @map("tax_id") @db.VarChar(50)
+
+  legalName   String           @map("legal_name") @db.VarChar(500)
+  tradeName   String?          @map("trade_name") @db.VarChar(500)
+  type        OrganizationType
+  industry    String?          @db.VarChar(100)
+  description String?
+
+  headquartersAddressId       String? @map("headquarters_address_id") @db.Uuid
+  jurisdictionOfIncorporation String? @map("jurisdiction_of_incorporation") @db.VarChar(100)
+
+  foundedDate       DateTime? @map("founded_date") @db.Date
+  incorporationDate DateTime? @map("incorporation_date") @db.Date
+  dissolutionDate   DateTime? @map("dissolution_date") @db.Date
+
+  publicContactEmail String? @map("public_contact_email") @db.VarChar(255)
+  publicContactPhone String? @map("public_contact_phone") @db.VarChar(50)
+  website            String? @db.VarChar(500)
+
+  employeeCount Int      @default(0) @map("employee_count")
+  annualRevenue Decimal? @map("annual_revenue") @db.Decimal(20, 2)
+  marketCap     Decimal? @map("market_cap") @db.Decimal(20, 2)
+  fiscalYearEnd String?  @map("fiscal_year_end") @db.VarChar(20)
+
+  isPubliclyTraded Boolean @default(false) @map("is_publicly_traded")
+  stockSymbol      String? @map("stock_symbol") @db.VarChar(20)
+  stockExchange    String? @map("stock_exchange") @db.VarChar(50)
+
+  parentOrganizationId String? @map("parent_organization_id") @db.Uuid
+  ultimateParentId     String? @map("ultimate_parent_id") @db.Uuid
+
+  status       OrganizationStatus @default(ACTIVE)
+  statusReason String?            @map("status_reason")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdBy String?  @map("created_by") @db.Uuid
+
+  metadata Json @default("{}") @db.JsonB
+
+  // Relations
+  headquartersAddress  Address?       @relation(fields: [headquartersAddressId], references: [id])
+  parentOrganization   Organization?  @relation("OrgHierarchy", fields: [parentOrganizationId], references: [id])
+  childOrganizations   Organization[] @relation("OrgHierarchy")
+  ultimateParent       Organization?  @relation("UltimateParent", fields: [ultimateParentId], references: [id])
+  ultimateChildren     Organization[] @relation("UltimateParent")
+
+  regions           OrganizationRegion[]
+  ownershipStakes   OwnershipStake[]
+  beneficialOwners  BeneficialOwner[]
+  licenses          License[]
+  certifications    Certification[]
+  regulatoryFilings RegulatoryFiling[]
+  registeredAgents  RegisteredAgent[]
+  conflictsOfInterest ConflictOfInterest[]
+  metricValues      MetricValue[]
+  tblScores         TblScore[]
+
+  sourceRelationships OrganizationRelationship[] @relation("SourceOrg")
+  targetRelationships OrganizationRelationship[] @relation("TargetOrg")
+
+  @@map("organizations")
+}
+
+model OrganizationRegion {
+  organizationId String  @map("organization_id") @db.Uuid
+  regionId       String  @map("region_id") @db.Uuid
+  isHeadquarters Boolean @default(false) @map("is_headquarters")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  region       Region       @relation(fields: [regionId], references: [id], onDelete: Cascade)
+
+  @@id([organizationId, regionId])
+  @@map("organization_regions")
+}
+
+model OwnershipStake {
+  id             String   @id @default(uuid()) @db.Uuid
+  organizationId String   @map("organization_id") @db.Uuid
+  ownerId        String   @map("owner_id") @db.Uuid
+  ownerType      String   @map("owner_type") @db.VarChar(20)
+  ownerName      String   @map("owner_name") @db.VarChar(500)
+
+  percentageOwned   Decimal  @map("percentage_owned") @db.Decimal(7, 4)
+  shareClass        String?  @map("share_class") @db.VarChar(100)
+  votingRights      Boolean  @default(true) @map("voting_rights")
+  votingPower       Decimal? @map("voting_power") @db.Decimal(7, 4)
+  acquiredDate      DateTime @map("acquired_date") @db.Date
+  acquisitionMethod String   @map("acquisition_method") @db.VarChar(50)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("ownership_stakes")
+}
+
+model BeneficialOwner {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @map("organization_id") @db.Uuid
+  personId       String @map("person_id") @db.Uuid
+
+  percentageBeneficialOwnership Decimal  @map("percentage_beneficial_ownership") @db.Decimal(7, 4)
+  ownershipChain                String[] @map("ownership_chain") @db.Uuid
+  controlType                   String   @map("control_type") @db.VarChar(20)
+  verifiedDate                  DateTime? @map("verified_date") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, personId])
+  @@map("beneficial_owners")
+}
+
+model License {
+  id             String   @id @default(uuid()) @db.Uuid
+  organizationId String   @map("organization_id") @db.Uuid
+
+  type             String    @db.VarChar(100)
+  licenseNumber    String    @map("license_number") @db.VarChar(100)
+  issuingAuthority String    @map("issuing_authority") @db.VarChar(255)
+  issuedDate       DateTime  @map("issued_date") @db.Date
+  expirationDate   DateTime? @map("expiration_date") @db.Date
+  status           String    @default("ACTIVE") @db.VarChar(20)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("licenses")
+}
+
+model Certification {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @map("organization_id") @db.Uuid
+
+  name            String    @db.VarChar(255)
+  issuingBody     String    @map("issuing_body") @db.VarChar(255)
+  issuedDate      DateTime  @map("issued_date") @db.Date
+  expirationDate  DateTime? @map("expiration_date") @db.Date
+  status          String    @default("ACTIVE") @db.VarChar(20)
+  verificationUrl String?   @map("verification_url")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("certifications")
+}
+
+model RegulatoryFiling {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @map("organization_id") @db.Uuid
+
+  filingType     String    @map("filing_type") @db.VarChar(100)
+  regulatoryBody String    @map("regulatory_body") @db.VarChar(255)
+  filingDate     DateTime  @map("filing_date") @db.Date
+  periodStart    DateTime? @map("period_start") @db.Date
+  periodEnd      DateTime? @map("period_end") @db.Date
+  documentUrl    String?   @map("document_url")
+  status         String    @default("SUBMITTED") @db.VarChar(20)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("regulatory_filings")
+}
+
+model OrganizationRelationship {
+  id          String @id @default(uuid()) @db.Uuid
+  sourceOrgId String @map("source_org_id") @db.Uuid
+  targetOrgId String @map("target_org_id") @db.Uuid
+
+  relationshipType String    @map("relationship_type") @db.VarChar(50)
+  description      String?
+  startDate        DateTime  @map("start_date") @db.Date
+  endDate          DateTime? @map("end_date") @db.Date
+  isActive         Boolean   @default(true) @map("is_active")
+  financialValue   Decimal?  @map("financial_value") @db.Decimal(20, 2)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  sourceOrg Organization @relation("SourceOrg", fields: [sourceOrgId], references: [id], onDelete: Cascade)
+  targetOrg Organization @relation("TargetOrg", fields: [targetOrgId], references: [id], onDelete: Cascade)
+
+  @@map("organization_relationships")
+}
+
+model RegisteredAgent {
+  id             String   @id @default(uuid()) @db.Uuid
+  organizationId String   @map("organization_id") @db.Uuid
+  name           String   @db.VarChar(255)
+  addressId      String?  @map("address_id") @db.Uuid
+  agentType      String   @map("agent_type") @db.VarChar(20)
+  appointedDate  DateTime @map("appointed_date") @db.Date
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  address      Address?     @relation(fields: [addressId], references: [id])
+
+  @@map("registered_agents")
+}
+
+model Category {
+  id               String  @id @default(uuid()) @db.Uuid
+  name             String  @unique @db.VarChar(100)
+  description      String?
+  parentCategoryId String? @map("parent_category_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  parentCategory  Category?    @relation("CategoryHierarchy", fields: [parentCategoryId], references: [id])
+  childCategories Category[]   @relation("CategoryHierarchy")
+  bills           Bill[]
+  delegations     Delegation[]
+
+  @@map("categories")
+}
+
+// ============================================================================
+// LEGISLATION
+// ============================================================================
+
+model Bill {
+  id String @id @default(uuid()) @db.Uuid
+
+  title            String     @db.VarChar(500)
+  shortTitle       String?    @map("short_title") @db.VarChar(255)
+  billNumber       String?    @unique @map("bill_number") @db.VarChar(50)
+  content          String
+  summary          String?
+
+  version           Int       @default(1)
+  gitBranch         String?   @map("git_branch") @db.VarChar(255)
+  latestCommitHash  String?   @map("latest_commit_hash") @db.VarChar(64)
+  previousVersionId String?   @map("previous_version_id") @db.Uuid
+
+  status          BillStatus @default(DRAFT)
+  statusReason    String?    @map("status_reason")
+  statusChangedAt DateTime   @default(now()) @map("status_changed_at") @db.Timestamptz(6)
+
+  sponsorId String @map("sponsor_id") @db.Uuid
+
+  categoryId      String?         @map("category_id") @db.Uuid
+  regionId        String?         @map("region_id") @db.Uuid
+  governanceLevel GovernanceLevel @default(LOCAL) @map("governance_level")
+
+  constitutionalCheckPassed Boolean?  @map("constitutional_check_passed")
+  constitutionalCheckDate   DateTime? @map("constitutional_check_date") @db.Timestamptz(6)
+  constitutionalCheckNotes  String?   @map("constitutional_check_notes")
+
+  estimatedCost      Decimal? @map("estimated_cost") @db.Decimal(20, 2)
+  estimatedBenefit   Decimal? @map("estimated_benefit") @db.Decimal(20, 2)
+  impactScore        Decimal? @map("impact_score") @db.Decimal(5, 2)
+  affectedPopulation Int?     @map("affected_population")
+
+  forkedFromId String? @map("forked_from_id") @db.Uuid
+  forkReason   String? @map("fork_reason")
+
+  sunsetDate       DateTime? @map("sunset_date") @db.Date
+  sunsetReviewDate DateTime? @map("sunset_review_date") @db.Date
+  autoExpire       Boolean   @default(false) @map("auto_expire")
+
+  votingSessionId String? @map("voting_session_id") @db.Uuid
+
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdBy  String?   @map("created_by") @db.Uuid
+  enactedAt  DateTime? @map("enacted_at") @db.Timestamptz(6)
+  repealedAt DateTime? @map("repealed_at") @db.Timestamptz(6)
+
+  metadata Json @default("{}") @db.JsonB
+
+  // Relations
+  sponsor        Person         @relation("BillSponsor", fields: [sponsorId], references: [id])
+  category       Category?      @relation(fields: [categoryId], references: [id])
+  region         Region?        @relation(fields: [regionId], references: [id])
+  previousVersion Bill?         @relation("BillVersions", fields: [previousVersionId], references: [id])
+  nextVersions   Bill[]         @relation("BillVersions")
+  forkedFrom     Bill?          @relation("BillForks", fields: [forkedFromId], references: [id])
+  forks          Bill[]         @relation("BillForks")
+  votingSession  VotingSession? @relation(fields: [votingSessionId], references: [id])
+
+  cosponsors         BillCosponsor[]
+  amendments         Amendment[]
+  versions           BillVersion[]
+  committeeAssignments BillCommitteeAssignment[]
+  documents          Document[]
+  publicComments     PublicComment[]
+  delegations        Delegation[]
+  metricValues       MetricValue[]
+  tblScores          TblScore[]
+  sunsetTracking     SunsetTracking?
+
+  @@map("bills")
+}
+
+model BillCosponsor {
+  billId           String    @map("bill_id") @db.Uuid
+  personId         String    @map("person_id") @db.Uuid
+  cosponsoredAt    DateTime  @default(now()) @map("cosponsored_at") @db.Timestamptz(6)
+  withdrawn        Boolean   @default(false)
+  withdrawnAt      DateTime? @map("withdrawn_at") @db.Timestamptz(6)
+  withdrawalReason String?   @map("withdrawal_reason")
+
+  bill   Bill   @relation(fields: [billId], references: [id], onDelete: Cascade)
+  person Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@id([billId, personId])
+  @@map("bill_cosponsors")
+}
+
+model Amendment {
+  id     String @id @default(uuid()) @db.Uuid
+  billId String @map("bill_id") @db.Uuid
+
+  title           String          @db.VarChar(500)
+  description     String
+  amendmentNumber String?         @map("amendment_number") @db.VarChar(50)
+  diff            String
+  affectedSections String[]       @map("affected_sections")
+
+  status          AmendmentStatus @default(PROPOSED)
+  statusReason    String?         @map("status_reason")
+  statusChangedAt DateTime        @default(now()) @map("status_changed_at") @db.Timestamptz(6)
+
+  proposedBy           String  @map("proposed_by") @db.Uuid
+  votingSessionId      String? @map("voting_session_id") @db.Uuid
+  requiresSeparateVote Boolean @default(false) @map("requires_separate_vote")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  metadata Json @default("{}") @db.JsonB
+
+  bill          Bill           @relation(fields: [billId], references: [id], onDelete: Cascade)
+  proposer      Person         @relation(fields: [proposedBy], references: [id])
+  votingSession VotingSession? @relation(fields: [votingSessionId], references: [id])
+  documents     Document[]
+
+  @@map("amendments")
+}
+
+model BillVersion {
+  id     String @id @default(uuid()) @db.Uuid
+  billId String @map("bill_id") @db.Uuid
+
+  versionNumber    Int      @map("version_number")
+  content          String
+  commitHash       String   @map("commit_hash") @db.VarChar(64)
+  parentCommitHash String?  @map("parent_commit_hash") @db.VarChar(64)
+
+  changeSummary      String?  @map("change_summary")
+  changedBy          String   @map("changed_by") @db.Uuid
+  changeReason       String?  @map("change_reason")
+  includedAmendments String[] @map("included_amendments") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  bill Bill @relation(fields: [billId], references: [id], onDelete: Cascade)
+
+  @@unique([billId, versionNumber])
+  @@map("bill_versions")
+}
+
+model Committee {
+  id String @id @default(uuid()) @db.Uuid
+
+  name         String  @db.VarChar(255)
+  description  String?
+  jurisdiction String?
+
+  regionId          String?   @map("region_id") @db.Uuid
+  parentCommitteeId String?   @map("parent_committee_id") @db.Uuid
+
+  active          Boolean   @default(true)
+  establishedDate DateTime  @map("established_date") @db.Date
+  dissolvedDate   DateTime? @map("dissolved_date") @db.Date
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  metadata Json @default("{}") @db.JsonB
+
+  region          Region?     @relation(fields: [regionId], references: [id])
+  parentCommittee Committee?  @relation("CommitteeHierarchy", fields: [parentCommitteeId], references: [id])
+  subCommittees   Committee[] @relation("CommitteeHierarchy")
+
+  members         CommitteeMember[]
+  billAssignments BillCommitteeAssignment[]
+  documents       Document[]
+
+  @@map("committees")
+}
+
+model CommitteeMember {
+  committeeId String    @map("committee_id") @db.Uuid
+  personId    String    @map("person_id") @db.Uuid
+  role        String    @default("MEMBER") @db.VarChar(50)
+  joinedAt    DateTime  @default(now()) @map("joined_at") @db.Timestamptz(6)
+  leftAt      DateTime? @map("left_at") @db.Timestamptz(6)
+  active      Boolean   @default(true)
+
+  committee Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
+  person    Person    @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@id([committeeId, personId])
+  @@map("committee_members")
+}
+
+model BillCommitteeAssignment {
+  id          String @id @default(uuid()) @db.Uuid
+  billId      String @map("bill_id") @db.Uuid
+  committeeId String @map("committee_id") @db.Uuid
+
+  assignedAt   DateTime  @default(now()) @map("assigned_at") @db.Timestamptz(6)
+  assignedBy   String?   @map("assigned_by") @db.Uuid
+
+  reviewStatus String    @default("PENDING") @map("review_status") @db.VarChar(50)
+  reviewDate   DateTime? @map("review_date") @db.Timestamptz(6)
+  reviewNotes  String?   @map("review_notes")
+
+  hearingScheduled Boolean   @default(false) @map("hearing_scheduled")
+  hearingDate      DateTime? @map("hearing_date") @db.Timestamptz(6)
+
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  bill      Bill      @relation(fields: [billId], references: [id], onDelete: Cascade)
+  committee Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
+
+  @@unique([billId, committeeId])
+  @@map("bill_committee_assignments")
+}
+
+model Document {
+  id String @id @default(uuid()) @db.Uuid
+
+  title       String  @db.VarChar(500)
+  type        String  @db.VarChar(50)
+  description String?
+
+  content       String?
+  filePath      String? @map("file_path")
+  fileHash      String? @map("file_hash") @db.VarChar(128)
+  fileSizeBytes BigInt? @map("file_size_bytes")
+  mimeType      String? @map("mime_type") @db.VarChar(100)
+
+  billId       String? @map("bill_id") @db.Uuid
+  amendmentId  String? @map("amendment_id") @db.Uuid
+  committeeId  String? @map("committee_id") @db.Uuid
+  authorId     String? @map("author_id") @db.Uuid
+  authorOrgId  String? @map("author_organization_id") @db.Uuid
+
+  isPublic    Boolean   @default(true) @map("is_public")
+  publishedAt DateTime? @map("published_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  metadata Json @default("{}") @db.JsonB
+
+  bill       Bill?       @relation(fields: [billId], references: [id])
+  amendment  Amendment?  @relation(fields: [amendmentId], references: [id])
+  committee  Committee?  @relation(fields: [committeeId], references: [id])
+  metricValues MetricValue[]
+
+  @@map("documents")
+}
+
+model PublicComment {
+  id     String @id @default(uuid()) @db.Uuid
+  billId String @map("bill_id") @db.Uuid
+
+  authorId    String? @map("author_id") @db.Uuid
+  authorName  String? @map("author_name") @db.VarChar(255)
+  isAnonymous Boolean @default(false) @map("is_anonymous")
+
+  content   String
+  sentiment String? @db.VarChar(20)
+
+  approved        Boolean   @default(false)
+  approvedBy      String?   @map("approved_by") @db.Uuid
+  approvedAt      DateTime? @map("approved_at") @db.Timestamptz(6)
+  rejected        Boolean   @default(false)
+  rejectionReason String?   @map("rejection_reason")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  metadata Json @default("{}") @db.JsonB
+
+  bill Bill @relation(fields: [billId], references: [id], onDelete: Cascade)
+
+  @@map("public_comments")
+}
+
+// ============================================================================
+// VOTING
+// ============================================================================
+
+model VotingSession {
+  id     String @id @default(uuid()) @db.Uuid
+  billId String @map("bill_id") @db.Uuid
+
+  startDate DateTime @map("start_date") @db.Timestamptz(6)
+  endDate   DateTime @map("end_date") @db.Timestamptz(6)
+
+  minimumParticipation Decimal @default(0.2000) @map("minimum_participation") @db.Decimal(5, 4)
+  approvalThreshold    Decimal @default(0.5001) @map("approval_threshold") @db.Decimal(5, 4)
+  urgencyModifier      Decimal? @map("urgency_modifier") @db.Decimal(5, 4)
+  impactScaling        Decimal? @map("impact_scaling") @db.Decimal(5, 4)
+
+  status VotingStatus @default(PENDING)
+
+  forCount         Int     @default(0) @map("for_count")
+  againstCount     Int     @default(0) @map("against_count")
+  abstainCount     Int     @default(0) @map("abstain_count")
+  totalVotes       Int     @default(0) @map("total_votes")
+  weightedFor      Decimal @default(0) @map("weighted_for") @db.Decimal(20, 4)
+  weightedAgainst  Decimal @default(0) @map("weighted_against") @db.Decimal(20, 4)
+  weightedAbstain  Decimal @default(0) @map("weighted_abstain") @db.Decimal(20, 4)
+  participationRate Decimal @default(0) @map("participation_rate") @db.Decimal(5, 4)
+  quorumMet        Boolean @default(false) @map("quorum_met")
+  passed           Boolean?
+
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  finalizedAt DateTime? @map("finalized_at") @db.Timestamptz(6)
+  finalizedBy String?   @map("finalized_by") @db.Uuid
+
+  metadata Json @default("{}") @db.JsonB
+
+  bills       Bill[]
+  amendments  Amendment[]
+  votes       Vote[]
+  votingStats VotingStats?
+
+  @@map("voting_sessions")
+}
+
+model Vote {
+  id        String @id @default(uuid()) @db.Uuid
+  sessionId String @map("session_id") @db.Uuid
+  citizenId String @map("citizen_id") @db.Uuid
+
+  choice VoteChoice
+  weight Decimal    @default(1.0) @db.Decimal(10, 4)
+
+  timestamp DateTime @default(now()) @db.Timestamptz(6)
+
+  cryptographicProof String   @map("cryptographic_proof")
+  delegationChain    String[] @map("delegation_chain") @db.Uuid
+
+  isPublic    Boolean @default(false) @map("is_public")
+  explanation String?
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  metadata Json @default("{}") @db.JsonB
+
+  session       VotingSession      @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  citizen       Person             @relation(fields: [citizenId], references: [id])
+  verifications VoteVerification[]
+
+  @@unique([sessionId, citizenId])
+  @@map("votes")
+}
+
+model Delegation {
+  id          String @id @default(uuid()) @db.Uuid
+  delegatorId String @map("delegator_id") @db.Uuid
+  delegateId  String @map("delegate_id") @db.Uuid
+
+  scope      DelegationScope @default(ALL)
+  categoryId String?         @map("category_id") @db.Uuid
+  billId     String?         @map("bill_id") @db.Uuid
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  expiresAt DateTime? @map("expires_at") @db.Timestamptz(6)
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz(6)
+
+  active   Boolean @default(true)
+  priority Int     @default(100)
+
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  metadata Json @default("{}") @db.JsonB
+
+  delegator Person    @relation("Delegator", fields: [delegatorId], references: [id], onDelete: Cascade)
+  delegate  Person    @relation("Delegate", fields: [delegateId], references: [id], onDelete: Cascade)
+  category  Category? @relation(fields: [categoryId], references: [id])
+  bill      Bill?     @relation(fields: [billId], references: [id])
+
+  @@map("delegations")
+}
+
+model VotingStats {
+  id        String @id @default(uuid()) @db.Uuid
+  sessionId String @unique @map("session_id") @db.Uuid
+
+  totalEligible Int @default(0) @map("total_eligible")
+  totalVoted    Int @default(0) @map("total_voted")
+
+  participationRate Decimal @default(0) @map("participation_rate") @db.Decimal(5, 4)
+  averageTimeToVote String? @map("average_time_to_vote")
+  delegationRate    Decimal @default(0) @map("delegation_rate") @db.Decimal(5, 4)
+
+  directVotes    Int @default(0) @map("direct_votes")
+  delegatedVotes Int @default(0) @map("delegated_votes")
+
+  regionBreakdown            Json @default("{}") @map("region_breakdown") @db.JsonB
+  verificationLevelBreakdown Json @default("{}") @map("verification_level_breakdown") @db.JsonB
+
+  computedAt DateTime @default(now()) @map("computed_at") @db.Timestamptz(6)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  session VotingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("voting_stats")
+}
+
+model VoteVerification {
+  id     String @id @default(uuid()) @db.Uuid
+  voteId String @map("vote_id") @db.Uuid
+
+  verifierPublicKey     String   @map("verifier_public_key")
+  verificationTimestamp DateTime @default(now()) @map("verification_timestamp") @db.Timestamptz(6)
+  verificationResult    Boolean  @map("verification_result")
+  verificationProof     String   @map("verification_proof")
+
+  challenged          Boolean @default(false)
+  challengeReason     String? @map("challenge_reason")
+  challengeResolved   Boolean? @map("challenge_resolved")
+  challengeResolution String? @map("challenge_resolution")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  vote Vote @relation(fields: [voteId], references: [id], onDelete: Cascade)
+
+  @@map("vote_verifications")
+}
+
+// ============================================================================
+// ASSOCIATIONS
+// ============================================================================
+
+model Association {
+  id              String @id @default(uuid()) @db.Uuid
+  associationType String @map("association_type") @db.VarChar(50)
+
+  subjectType String @map("subject_type") @db.VarChar(20)
+  subjectId   String @map("subject_id") @db.Uuid
+  subjectName String @map("subject_name") @db.VarChar(500)
+
+  objectType String @map("object_type") @db.VarChar(50)
+  objectId   String @map("object_id") @db.Uuid
+  objectName String @map("object_name") @db.VarChar(500)
+
+  involvementType String  @map("involvement_type") @db.VarChar(50)
+  role            String? @db.VarChar(100)
+  description     String?
+
+  startDate DateTime  @map("start_date") @db.Date
+  endDate   DateTime? @map("end_date") @db.Date
+  isActive  Boolean   @default(true) @map("is_active")
+
+  significance SignificanceLevel @default(SECONDARY)
+  impactScore  Decimal?          @map("impact_score") @db.Decimal(5, 2)
+
+  financialValue Decimal? @map("financial_value") @db.Decimal(20, 2)
+  financialType  String?  @map("financial_type") @db.VarChar(20)
+
+  verified         Boolean   @default(false)
+  verifiedBy       String?   @map("verified_by") @db.Uuid
+  verificationDate DateTime? @map("verification_date") @db.Timestamptz(6)
+  sourceDocuments  String[]  @map("source_documents")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdBy String?  @map("created_by") @db.Uuid
+
+  metadata Json @default("{}") @db.JsonB
+
+  creator            Person?             @relation("AssociationCreator", fields: [createdBy], references: [id])
+  involvementRecords InvolvementRecord[]
+  networkEdges       NetworkEdge[]
+
+  @@map("associations")
+}
+
+model InvolvementRecord {
+  id            String @id @default(uuid()) @db.Uuid
+  associationId String @map("association_id") @db.Uuid
+
+  action         String    @db.VarChar(500)
+  actionDate     DateTime  @map("action_date") @db.Timestamptz(6)
+  actionLocation String?   @map("action_location") @db.VarChar(255)
+
+  details         String
+  publicStatement String? @map("public_statement")
+
+  documentIds String[] @map("document_ids") @db.Uuid
+  mediaUrls   String[] @map("media_urls")
+
+  recordedAt DateTime @default(now()) @map("recorded_at") @db.Timestamptz(6)
+  recordedBy String?  @map("recorded_by") @db.Uuid
+  signature  String?
+
+  metadata Json @default("{}") @db.JsonB
+
+  association Association           @relation(fields: [associationId], references: [id], onDelete: Cascade)
+  witnesses   InvolvementWitness[]
+
+  @@map("involvement_records")
+}
+
+model InvolvementWitness {
+  id                   String @id @default(uuid()) @db.Uuid
+  involvementRecordId  String @map("involvement_record_id") @db.Uuid
+  personId             String @map("person_id") @db.Uuid
+  personName           String @map("person_name") @db.VarChar(255)
+  capacity             String @db.VarChar(255)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  involvementRecord InvolvementRecord @relation(fields: [involvementRecordId], references: [id], onDelete: Cascade)
+
+  @@map("involvement_witnesses")
+}
+
+model ConflictOfInterest {
+  id         String @id @default(uuid()) @db.Uuid
+  personId   String @map("person_id") @db.Uuid
+  personName String @map("person_name") @db.VarChar(255)
+
+  conflictType ConflictType
+  description  String
+  severity     ConflictSeverity @default(MEDIUM)
+
+  governmentOrgId   String? @map("government_org_id") @db.Uuid
+  governmentOrgName String? @map("government_org_name") @db.VarChar(500)
+  governmentRole    String? @map("government_role") @db.VarChar(255)
+
+  privateEntityId         String?  @map("private_entity_id") @db.Uuid
+  privateEntityName       String?  @map("private_entity_name") @db.VarChar(500)
+  privateRelationshipType String?  @map("private_relationship_type") @db.VarChar(255)
+  privateFinancialValue   Decimal? @map("private_financial_value") @db.Decimal(20, 2)
+
+  affectedActions Json @default("[]") @map("affected_actions") @db.JsonB
+
+  status           ConflictStatus @default(DETECTED)
+  disclosureDate   DateTime?      @map("disclosure_date") @db.Timestamptz(6)
+  recusalDate      DateTime?      @map("recusal_date") @db.Timestamptz(6)
+  waiverGrantedBy  String?        @map("waiver_granted_by") @db.Uuid
+
+  detectedAt DateTime @default(now()) @map("detected_at") @db.Timestamptz(6)
+  detectedBy String   @map("detected_by") @db.VarChar(255)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  metadata Json @default("{}") @db.JsonB
+
+  person         Person        @relation(fields: [personId], references: [id], onDelete: Cascade)
+  governmentOrg  Organization? @relation(fields: [governmentOrgId], references: [id])
+
+  @@map("conflicts_of_interest")
+}
+
+model NetworkNode {
+  id         String @id @default(uuid()) @db.Uuid
+  entityId   String @map("entity_id") @db.Uuid
+  entityType String @map("entity_type") @db.VarChar(50)
+  name       String @db.VarChar(500)
+
+  connectionCount  Int     @default(0) @map("connection_count")
+  centralityScore  Decimal @default(0) @map("centrality_score") @db.Decimal(10, 6)
+
+  metadata   Json     @default("{}") @db.JsonB
+  computedAt DateTime @default(now()) @map("computed_at") @db.Timestamptz(6)
+
+  @@unique([entityId, entityType])
+  @@map("network_nodes")
+}
+
+model NetworkEdge {
+  id            String @id @default(uuid()) @db.Uuid
+  sourceId      String @map("source_id") @db.Uuid
+  targetId      String @map("target_id") @db.Uuid
+  associationId String @map("association_id") @db.Uuid
+
+  involvementType String    @map("involvement_type") @db.VarChar(50)
+  weight          Decimal   @default(1.0) @db.Decimal(10, 4)
+  startDate       DateTime  @map("start_date") @db.Date
+  endDate         DateTime? @map("end_date") @db.Date
+  isActive        Boolean   @default(true) @map("is_active")
+
+  computedAt DateTime @default(now()) @map("computed_at") @db.Timestamptz(6)
+
+  association Association @relation(fields: [associationId], references: [id], onDelete: Cascade)
+
+  @@map("network_edges")
+}
+
+// ============================================================================
+// METRICS
+// ============================================================================
+
+model MetricDefinition {
+  id String @id @default(uuid()) @db.Uuid
+
+  name        String         @unique @db.VarChar(255)
+  description String
+  category    MetricCategory
+
+  unit               String   @db.VarChar(100)
+  dataType           String   @default("DECIMAL") @map("data_type") @db.VarChar(50)
+  targetValue        Decimal? @map("target_value") @db.Decimal(20, 4)
+  minimumThreshold   Decimal? @map("minimum_threshold") @db.Decimal(20, 4)
+  maximumThreshold   Decimal? @map("maximum_threshold") @db.Decimal(20, 4)
+
+  weight              Decimal @default(1.0) @db.Decimal(5, 4)
+  collectionFrequency String? @default("MONTHLY") @map("collection_frequency") @db.VarChar(50)
+  sourceSystem        String? @map("source_system") @db.VarChar(255)
+  calculationFormula  String? @map("calculation_formula")
+
+  active Boolean @default(true)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdBy String?  @map("created_by") @db.Uuid
+
+  metadata Json @default("{}") @db.JsonB
+
+  values MetricValue[]
+
+  @@map("metric_definitions")
+}
+
+model MetricValue {
+  id       String @id @default(uuid()) @db.Uuid
+  metricId String @map("metric_id") @db.Uuid
+
+  value            Decimal  @db.Decimal(20, 4)
+  previousValue    Decimal? @map("previous_value") @db.Decimal(20, 4)
+  changePercentage Decimal? @map("change_percentage") @db.Decimal(10, 4)
+
+  regionId       String? @map("region_id") @db.Uuid
+  organizationId String? @map("organization_id") @db.Uuid
+  billId         String? @map("bill_id") @db.Uuid
+
+  measurementDate      DateTime @map("measurement_date") @db.Date
+  measurementTimestamp DateTime @default(now()) @map("measurement_timestamp") @db.Timestamptz(6)
+  periodStart          DateTime? @map("period_start") @db.Date
+  periodEnd            DateTime? @map("period_end") @db.Date
+
+  confidenceLevel Decimal? @default(1.0) @map("confidence_level") @db.Decimal(5, 4)
+  dataQuality     String?  @default("VERIFIED") @map("data_quality") @db.VarChar(20)
+
+  sourceDocumentId String? @map("source_document_id") @db.Uuid
+  notes            String?
+
+  recordedAt DateTime @default(now()) @map("recorded_at") @db.Timestamptz(6)
+  recordedBy String?  @map("recorded_by") @db.Uuid
+
+  metric         MetricDefinition @relation(fields: [metricId], references: [id], onDelete: Cascade)
+  region         Region?          @relation(fields: [regionId], references: [id])
+  organization   Organization?    @relation(fields: [organizationId], references: [id])
+  bill           Bill?            @relation(fields: [billId], references: [id])
+  sourceDocument Document?        @relation(fields: [sourceDocumentId], references: [id])
+
+  @@map("metric_values")
+}
+
+model TblScore {
+  id String @id @default(uuid()) @db.Uuid
+
+  entityType String @map("entity_type") @db.VarChar(50)
+  entityId   String @map("entity_id") @db.Uuid
+  entityName String? @map("entity_name") @db.VarChar(500)
+
+  peopleScore    Decimal @map("people_score") @db.Decimal(5, 2)
+  planetScore    Decimal @map("planet_score") @db.Decimal(5, 2)
+  profitScore    Decimal @map("profit_score") @db.Decimal(5, 2)
+  compositeScore Decimal @map("composite_score") @db.Decimal(5, 2)
+
+  peopleWeight Decimal @default(0.3333) @map("people_weight") @db.Decimal(5, 4)
+  planetWeight Decimal @default(0.3333) @map("planet_weight") @db.Decimal(5, 4)
+  profitWeight Decimal @default(0.3334) @map("profit_weight") @db.Decimal(5, 4)
+
+  tradeoffs Json @default("[]") @db.JsonB
+
+  scoreDate      DateTime @map("score_date") @db.Date
+  scoreTimestamp DateTime @default(now()) @map("score_timestamp") @db.Timestamptz(6)
+  periodStart    DateTime? @map("period_start") @db.Date
+  periodEnd      DateTime? @map("period_end") @db.Date
+
+  computedAt DateTime @default(now()) @map("computed_at") @db.Timestamptz(6)
+  computedBy String   @default("SYSTEM") @map("computed_by") @db.VarChar(255)
+
+  metadata Json @default("{}") @db.JsonB
+
+  organization Organization? @relation(fields: [entityId], references: [id], map: "tbl_scores_organization_fkey")
+  bill         Bill?         @relation(fields: [entityId], references: [id], map: "tbl_scores_bill_fkey")
+
+  @@unique([entityType, entityId, scoreDate])
+  @@map("tbl_scores")
+}
+
+// ============================================================================
+// AUDIT & CHANGE TRACKING
+// ============================================================================
+
+model ChangeRecord {
+  id String @id @default(uuid()) @db.Uuid
+
+  commitHash       String  @unique @map("commit_hash") @db.VarChar(64)
+  parentCommitHash String? @map("parent_commit_hash") @db.VarChar(64)
+
+  entityType TrackedEntityType @map("entity_type")
+  entityId   String            @map("entity_id") @db.Uuid
+  changeType ChangeType        @map("change_type")
+
+  fieldChanges Json @default("[]") @map("field_changes") @db.JsonB
+
+  changedByPersonId   String  @map("changed_by_person_id") @db.Uuid
+  changedByPersonName String  @map("changed_by_person_name") @db.VarChar(255)
+  changedByRole       String? @map("changed_by_role") @db.VarChar(100)
+  officialCapacity    Boolean @default(false) @map("official_capacity")
+
+  timestamp DateTime @default(now()) @db.Timestamptz(6)
+
+  reason           String
+  legalBasis       String?  @map("legal_basis")
+  relatedDocuments String[] @map("related_documents") @db.Uuid
+
+  signature          String?
+  witnesses          String[] @db.Uuid
+  verificationStatus VerificationStatus @default(PENDING) @map("verification_status")
+  verifiedAt         DateTime?          @map("verified_at") @db.Timestamptz(6)
+  verifiedBy         String?            @map("verified_by") @db.Uuid
+
+  metadata Json @default("{}") @db.JsonB
+
+  changedByPerson Person          @relation(fields: [changedByPersonId], references: [id])
+  disputes        ChangeDispute[]
+
+  @@map("change_records")
+}
+
+model ChangeDispute {
+  id             String @id @default(uuid()) @db.Uuid
+  changeRecordId String @map("change_record_id") @db.Uuid
+
+  disputedBy    String @map("disputed_by") @db.Uuid
+  disputeReason String @map("dispute_reason")
+
+  evidenceDocuments   String[] @map("evidence_documents") @db.Uuid
+  evidenceDescription String?  @map("evidence_description")
+
+  status          String    @default("OPEN") @db.VarChar(50)
+  resolvedBy      String?   @map("resolved_by") @db.Uuid
+  resolutionDate  DateTime? @map("resolution_date") @db.Timestamptz(6)
+  resolutionNotes String?   @map("resolution_notes")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  metadata Json @default("{}") @db.JsonB
+
+  changeRecord ChangeRecord @relation(fields: [changeRecordId], references: [id], onDelete: Cascade)
+
+  @@map("change_disputes")
+}
+
+model AuditLog {
+  id String @id @default(uuid()) @db.Uuid
+
+  action         String @db.VarChar(100)
+  actionCategory String @map("action_category") @db.VarChar(50)
+
+  actorId        String? @map("actor_id") @db.Uuid
+  actorType      String? @map("actor_type") @db.VarChar(50)
+  actorIpAddress String? @map("actor_ip_address") @db.Inet
+  actorUserAgent String? @map("actor_user_agent")
+
+  resourceType String? @map("resource_type") @db.VarChar(100)
+  resourceId   String? @map("resource_id") @db.Uuid
+  resourceName String? @map("resource_name") @db.VarChar(500)
+
+  requestData    Json? @map("request_data") @db.JsonB
+  responseStatus Int?  @map("response_status")
+  errorMessage   String? @map("error_message")
+
+  timestamp  DateTime @default(now()) @db.Timestamptz(6)
+  durationMs Int?     @map("duration_ms")
+
+  sessionId String? @map("session_id") @db.Uuid
+
+  metadata Json @default("{}") @db.JsonB
+
+  @@map("audit_log")
+}
+
+model SunsetTracking {
+  id     String @id @default(uuid()) @db.Uuid
+  billId String @unique @map("bill_id") @db.Uuid
+
+  sunsetDate DateTime @map("sunset_date") @db.Date
+  reviewDate DateTime? @map("review_date") @db.Date
+
+  notification90Days Boolean @default(false) @map("notification_90_days")
+  notification30Days Boolean @default(false) @map("notification_30_days")
+  notification7Days  Boolean @default(false) @map("notification_7_days")
+
+  reviewInitiated   Boolean   @default(false) @map("review_initiated")
+  reviewInitiatedBy String?   @map("review_initiated_by") @db.Uuid
+  reviewInitiatedAt DateTime? @map("review_initiated_at") @db.Timestamptz(6)
+
+  extensionRequested Boolean @default(false) @map("extension_requested")
+  extensionBillId    String? @map("extension_bill_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  metadata Json @default("{}") @db.JsonB
+
+  bill Bill @relation(fields: [billId], references: [id], onDelete: Cascade)
+
+  @@map("sunset_tracking")
+}

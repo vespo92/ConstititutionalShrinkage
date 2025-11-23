@@ -26,6 +26,15 @@ yarn-error.log*
 # Turbo
 .turbo/
 
+# TypeScript build info
+*.tsbuildinfo
+
+# Next.js generated types
+next-env.d.ts
+
+# Package lock (using npm workspaces)
+package-lock.json
+
 # IDE
 .vscode/
 .idea/

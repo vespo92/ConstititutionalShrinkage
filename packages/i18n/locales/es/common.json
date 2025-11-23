@@ -1,0 +1,76 @@
+{
+  "app": {
+    "name": "Reducción Constitucional",
+    "tagline": "Democracia Directa para la Era Digital"
+  },
+  "nav": {
+    "home": "Inicio",
+    "bills": "Proyectos de Ley",
+    "voting": "Votación",
+    "delegation": "Delegación",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "help": "Ayuda",
+    "logout": "Cerrar Sesión"
+  },
+  "actions": {
+    "submit": "Enviar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "view": "Ver",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "refresh": "Actualizar",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "loading": "Cargando...",
+    "retry": "Reintentar"
+  },
+  "status": {
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "pending": "Pendiente",
+    "completed": "Completado",
+    "failed": "Fallido",
+    "draft": "Borrador",
+    "published": "Publicado",
+    "archived": "Archivado"
+  },
+  "time": {
+    "now": "Ahora mismo",
+    "minutes_ago": "hace {{count}} minutos",
+    "hours_ago": "hace {{count}} horas",
+    "days_ago": "hace {{count}} días",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "tomorrow": "Mañana"
+  },
+  "accessibility": {
+    "skip_to_content": "Ir al contenido principal",
+    "skip_to_nav": "Ir a la navegación",
+    "skip_to_search": "Ir a la búsqueda",
+    "loading": "Cargando, por favor espere",
+    "loaded": "Contenido cargado",
+    "error": "Ocurrió un error"
+  },
+  "pagination": {
+    "page": "Página {{current}} de {{total}}",
+    "first": "Primera página",
+    "last": "Última página",
+    "next": "Página siguiente",
+    "previous": "Página anterior",
+    "items_per_page": "Elementos por página"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "email": "Por favor ingrese un correo electrónico válido",
+    "min_length": "Debe tener al menos {{min}} caracteres",
+    "max_length": "No debe exceder {{max}} caracteres"
+  }
+}

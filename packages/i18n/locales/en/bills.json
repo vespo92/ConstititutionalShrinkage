@@ -1,0 +1,74 @@
+{
+  "bill": {
+    "title": "Bills",
+    "singular": "Bill",
+    "new": "New Bill",
+    "draft": "Draft Bill",
+    "details": "Bill Details",
+    "summary": "Summary",
+    "full_text": "Full Text",
+    "sponsor": "Sponsor",
+    "sponsors": "Sponsors",
+    "co_sponsors": "Co-Sponsors",
+    "introduced": "Introduced",
+    "last_action": "Last Action",
+    "category": "Category",
+    "tags": "Tags"
+  },
+  "status": {
+    "introduced": "Introduced",
+    "in_committee": "In Committee",
+    "voting_open": "Voting Open",
+    "passed": "Passed",
+    "failed": "Failed",
+    "enacted": "Enacted",
+    "vetoed": "Vetoed",
+    "withdrawn": "Withdrawn"
+  },
+  "categories": {
+    "economy": "Economy & Finance",
+    "education": "Education",
+    "environment": "Environment",
+    "healthcare": "Healthcare",
+    "infrastructure": "Infrastructure",
+    "justice": "Justice & Legal",
+    "defense": "Defense & Security",
+    "social": "Social Services",
+    "technology": "Technology",
+    "foreign": "Foreign Affairs"
+  },
+  "actions": {
+    "read_more": "Read Full Bill",
+    "track": "Track This Bill",
+    "untrack": "Stop Tracking",
+    "share": "Share Bill",
+    "discuss": "Join Discussion",
+    "propose_amendment": "Propose Amendment",
+    "view_amendments": "View Amendments",
+    "compare_versions": "Compare Versions"
+  },
+  "search": {
+    "placeholder": "Search bills...",
+    "no_results": "No bills found matching your search.",
+    "results": {
+      "one": "{{count}} bill found",
+      "other": "{{count}} bills found"
+    }
+  },
+  "impact": {
+    "title": "Impact Analysis",
+    "fiscal": "Fiscal Impact",
+    "social": "Social Impact",
+    "environmental": "Environmental Impact",
+    "estimated_cost": "Estimated Cost",
+    "beneficiaries": "Beneficiaries"
+  },
+  "timeline": {
+    "title": "Bill Timeline",
+    "introduced": "Bill introduced",
+    "committee_review": "Committee review",
+    "public_comment": "Public comment period",
+    "voting_period": "Voting period",
+    "final_decision": "Final decision"
+  }
+}

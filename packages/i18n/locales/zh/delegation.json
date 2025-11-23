@@ -1,0 +1,59 @@
+{
+  "delegation": {
+    "title": "投票委托",
+    "subtitle": "将您的投票权委托给您信任的代表",
+    "my_delegates": "我的代表",
+    "my_delegators": "委托给我的人",
+    "no_delegates": "您尚未将投票权委托给任何人。",
+    "no_delegators": "目前没有人将投票权委托给您。"
+  },
+  "delegate": {
+    "add": "添加代表",
+    "remove": "移除代表",
+    "search": "搜索代表",
+    "select_topics": "选择主题",
+    "all_topics": "所有主题",
+    "specific_topics": "仅特定主题"
+  },
+  "topics": {
+    "economy": "经济与金融",
+    "education": "教育",
+    "environment": "环境",
+    "healthcare": "医疗健康",
+    "infrastructure": "基础设施",
+    "justice": "司法与法律",
+    "defense": "国防与安全",
+    "social": "社会服务",
+    "technology": "科技",
+    "foreign": "外交事务"
+  },
+  "profile": {
+    "voting_record": "投票记录",
+    "alignment": "与您的一致度",
+    "delegators_count": {
+      "other": "{{count}}人委托"
+    },
+    "active_since": "自{{date}}起活跃",
+    "total_votes": {
+      "other": "已投{{count}}票"
+    }
+  },
+  "confirmation": {
+    "add_title": "确认委托",
+    "add_message": "您即将把{{topics}}的投票权委托给{{delegate}}。他们将代表您在这些主题上投票。",
+    "remove_title": "移除委托",
+    "remove_message": "您确定要取消{{delegate}}作为您在{{topics}}上的代表吗？"
+  },
+  "notifications": {
+    "delegate_added": "{{delegate}}现在是您在{{topics}}上的代表",
+    "delegate_removed": "{{delegate}}不再是您在{{topics}}上的代表",
+    "vote_cast": "{{delegate}}代表您对{{bill}}进行了投票"
+  },
+  "transparency": {
+    "title": "委托链",
+    "your_vote": "您的投票",
+    "delegated_to": "委托给",
+    "final_voter": "最终投票人",
+    "chain_depth": "链深度：{{depth}}"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "bill": {
+    "title": "Proyectos de Ley",
+    "singular": "Proyecto de Ley",
+    "new": "Nuevo Proyecto",
+    "draft": "Borrador",
+    "details": "Detalles del Proyecto",
+    "summary": "Resumen",
+    "full_text": "Texto Completo",
+    "sponsor": "Patrocinador",
+    "sponsors": "Patrocinadores",
+    "co_sponsors": "Co-Patrocinadores",
+    "introduced": "Presentado",
+    "last_action": "Última Acción",
+    "category": "Categoría",
+    "tags": "Etiquetas"
+  },
+  "status": {
+    "introduced": "Presentado",
+    "in_committee": "En Comité",
+    "voting_open": "Votación Abierta",
+    "passed": "Aprobado",
+    "failed": "Rechazado",
+    "enacted": "Promulgado",
+    "vetoed": "Vetado",
+    "withdrawn": "Retirado"
+  },
+  "categories": {
+    "economy": "Economía y Finanzas",
+    "education": "Educación",
+    "environment": "Medio Ambiente",
+    "healthcare": "Salud",
+    "infrastructure": "Infraestructura",
+    "justice": "Justicia y Legal",
+    "defense": "Defensa y Seguridad",
+    "social": "Servicios Sociales",
+    "technology": "Tecnología",
+    "foreign": "Asuntos Exteriores"
+  },
+  "actions": {
+    "read_more": "Leer Proyecto Completo",
+    "track": "Seguir Este Proyecto",
+    "untrack": "Dejar de Seguir",
+    "share": "Compartir Proyecto",
+    "discuss": "Unirse a la Discusión",
+    "propose_amendment": "Proponer Enmienda",
+    "view_amendments": "Ver Enmiendas",
+    "compare_versions": "Comparar Versiones"
+  },
+  "search": {
+    "placeholder": "Buscar proyectos de ley...",
+    "no_results": "No se encontraron proyectos que coincidan con su búsqueda.",
+    "results": {
+      "one": "{{count}} proyecto encontrado",
+      "other": "{{count}} proyectos encontrados"
+    }
+  },
+  "impact": {
+    "title": "Análisis de Impacto",
+    "fiscal": "Impacto Fiscal",
+    "social": "Impacto Social",
+    "environmental": "Impacto Ambiental",
+    "estimated_cost": "Costo Estimado",
+    "beneficiaries": "Beneficiarios"
+  },
+  "timeline": {
+    "title": "Cronograma del Proyecto",
+    "introduced": "Proyecto presentado",
+    "committee_review": "Revisión en comité",
+    "public_comment": "Período de comentarios públicos",
+    "voting_period": "Período de votación",
+    "final_decision": "Decisión final"
+  }
+}

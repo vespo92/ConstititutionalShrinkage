@@ -1,0 +1,61 @@
+{
+  "delegation": {
+    "title": "Delegación",
+    "subtitle": "Delegue su poder de voto a representantes de confianza",
+    "my_delegates": "Mis Delegados",
+    "my_delegators": "Personas que Me Delegaron",
+    "no_delegates": "Aún no ha delegado su voto a nadie.",
+    "no_delegators": "Nadie ha delegado su voto a usted todavía."
+  },
+  "delegate": {
+    "add": "Agregar Delegado",
+    "remove": "Eliminar Delegado",
+    "search": "Buscar un delegado",
+    "select_topics": "Seleccionar Temas",
+    "all_topics": "Todos los Temas",
+    "specific_topics": "Solo Temas Específicos"
+  },
+  "topics": {
+    "economy": "Economía y Finanzas",
+    "education": "Educación",
+    "environment": "Medio Ambiente",
+    "healthcare": "Salud",
+    "infrastructure": "Infraestructura",
+    "justice": "Justicia y Legal",
+    "defense": "Defensa y Seguridad",
+    "social": "Servicios Sociales",
+    "technology": "Tecnología",
+    "foreign": "Asuntos Exteriores"
+  },
+  "profile": {
+    "voting_record": "Historial de Votación",
+    "alignment": "Alineación con usted",
+    "delegators_count": {
+      "one": "{{count}} persona delegó",
+      "other": "{{count}} personas delegaron"
+    },
+    "active_since": "Activo desde {{date}}",
+    "total_votes": {
+      "one": "{{count}} voto emitido",
+      "other": "{{count}} votos emitidos"
+    }
+  },
+  "confirmation": {
+    "add_title": "Confirmar Delegación",
+    "add_message": "Está a punto de delegar su poder de voto para {{topics}} a {{delegate}}. Ellos votarán en su nombre para estos temas.",
+    "remove_title": "Eliminar Delegación",
+    "remove_message": "¿Está seguro de que desea eliminar a {{delegate}} como su delegado para {{topics}}?"
+  },
+  "notifications": {
+    "delegate_added": "{{delegate}} es ahora su delegado para {{topics}}",
+    "delegate_removed": "{{delegate}} ya no es su delegado para {{topics}}",
+    "vote_cast": "{{delegate}} emitió un voto en su nombre para {{bill}}"
+  },
+  "transparency": {
+    "title": "Cadena de Delegación",
+    "your_vote": "Su Voto",
+    "delegated_to": "Delegado a",
+    "final_voter": "Votante Final",
+    "chain_depth": "Profundidad de la Cadena: {{depth}}"
+  }
+}

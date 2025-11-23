@@ -1,0 +1,21 @@
+{
+  "name": "@constitutional-shrinkage/a11y",
+  "version": "0.1.0",
+  "description": "Accessibility components, hooks, and utilities for WCAG 2.1 AAA compliance",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "echo 'Building a11y'",
+    "test": "echo 'Testing a11y'",
+    "lint": "echo 'Linting a11y'"
+  },
+  "dependencies": {
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "jest-axe": "^8.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  }
+}

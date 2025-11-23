@@ -1,0 +1,67 @@
+{
+  "generic": {
+    "title": "Algo Salió Mal",
+    "message": "Ocurrió un error inesperado. Por favor intente de nuevo.",
+    "retry": "Intentar de Nuevo",
+    "contact_support": "Contactar Soporte"
+  },
+  "network": {
+    "offline": "Parece que está sin conexión. Por favor verifique su conexión a internet.",
+    "timeout": "La solicitud expiró. Por favor intente de nuevo.",
+    "server_error": "Error del servidor. Nuestro equipo ha sido notificado.",
+    "service_unavailable": "Servicio temporalmente no disponible. Por favor intente más tarde."
+  },
+  "http": {
+    "400": "Solicitud incorrecta. Por favor verifique su entrada e intente de nuevo.",
+    "401": "Por favor inicie sesión para continuar.",
+    "403": "No tiene permiso para realizar esta acción.",
+    "404": "El recurso solicitado no fue encontrado.",
+    "409": "Ocurrió un conflicto. El recurso puede haber sido modificado.",
+    "422": "Los datos enviados son inválidos.",
+    "429": "Demasiadas solicitudes. Por favor espere un momento e intente de nuevo.",
+    "500": "Error interno del servidor. Por favor intente más tarde.",
+    "502": "Puerta de enlace incorrecta. Por favor intente más tarde.",
+    "503": "Servicio no disponible. Por favor intente más tarde.",
+    "504": "Tiempo de espera de la puerta de enlace agotado. Por favor intente más tarde."
+  },
+  "voting": {
+    "already_voted": "Ya ha votado en este proyecto de ley.",
+    "voting_closed": "La votación de este proyecto de ley ha cerrado.",
+    "voting_not_started": "La votación de este proyecto de ley aún no ha comenzado.",
+    "not_eligible": "No es elegible para votar en este proyecto de ley.",
+    "verification_required": "Se requiere verificación de identidad para votar."
+  },
+  "delegation": {
+    "self_delegation": "No puede delegarse a sí mismo.",
+    "circular_delegation": "Esto crearía una cadena de delegación circular.",
+    "delegate_not_found": "El delegado seleccionado no fue encontrado.",
+    "already_delegated": "Ya ha delegado a esta persona para este tema."
+  },
+  "form": {
+    "required_field": "Este campo es obligatorio.",
+    "invalid_format": "Formato inválido.",
+    "too_short": "Debe tener al menos {{min}} caracteres.",
+    "too_long": "No debe exceder {{max}} caracteres.",
+    "invalid_email": "Por favor ingrese un correo electrónico válido.",
+    "invalid_phone": "Por favor ingrese un número de teléfono válido.",
+    "file_too_large": "El archivo es muy grande. El tamaño máximo es {{max}}.",
+    "unsupported_file_type": "Tipo de archivo no soportado."
+  },
+  "pages": {
+    "not_found": {
+      "title": "Página No Encontrada",
+      "message": "La página que busca no existe o ha sido movida.",
+      "go_home": "Ir al Inicio"
+    },
+    "access_denied": {
+      "title": "Acceso Denegado",
+      "message": "No tiene permiso para ver esta página.",
+      "go_back": "Volver"
+    },
+    "maintenance": {
+      "title": "En Mantenimiento",
+      "message": "Actualmente estamos realizando mantenimiento programado. Por favor vuelva pronto.",
+      "estimated_time": "Tiempo estimado de finalización: {{time}}"
+    }
+  }
+}

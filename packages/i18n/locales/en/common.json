@@ -1,0 +1,76 @@
+{
+  "app": {
+    "name": "Constitutional Shrinkage",
+    "tagline": "Direct Democracy for the Digital Age"
+  },
+  "nav": {
+    "home": "Home",
+    "bills": "Bills",
+    "voting": "Voting",
+    "delegation": "Delegation",
+    "profile": "Profile",
+    "settings": "Settings",
+    "help": "Help",
+    "logout": "Log Out"
+  },
+  "actions": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "refresh": "Refresh",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "loading": "Loading...",
+    "retry": "Retry"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "pending": "Pending",
+    "completed": "Completed",
+    "failed": "Failed",
+    "draft": "Draft",
+    "published": "Published",
+    "archived": "Archived"
+  },
+  "time": {
+    "now": "Just now",
+    "minutes_ago": "{{count}} minutes ago",
+    "hours_ago": "{{count}} hours ago",
+    "days_ago": "{{count}} days ago",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "tomorrow": "Tomorrow"
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to main content",
+    "skip_to_nav": "Skip to navigation",
+    "skip_to_search": "Skip to search",
+    "loading": "Loading, please wait",
+    "loaded": "Content loaded",
+    "error": "An error occurred"
+  },
+  "pagination": {
+    "page": "Page {{current}} of {{total}}",
+    "first": "First page",
+    "last": "Last page",
+    "next": "Next page",
+    "previous": "Previous page",
+    "items_per_page": "Items per page"
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Please enter a valid email address",
+    "min_length": "Must be at least {{min}} characters",
+    "max_length": "Must be no more than {{max}} characters"
+  }
+}

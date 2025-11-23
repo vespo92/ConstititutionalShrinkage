@@ -1,0 +1,76 @@
+{
+  "app": {
+    "name": "宪法精简",
+    "tagline": "数字时代的直接民主"
+  },
+  "nav": {
+    "home": "首页",
+    "bills": "法案",
+    "voting": "投票",
+    "delegation": "委托",
+    "profile": "个人资料",
+    "settings": "设置",
+    "help": "帮助",
+    "logout": "退出登录"
+  },
+  "actions": {
+    "submit": "提交",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "view": "查看",
+    "search": "搜索",
+    "filter": "筛选",
+    "sort": "排序",
+    "refresh": "刷新",
+    "close": "关闭",
+    "confirm": "确认",
+    "back": "返回",
+    "next": "下一步",
+    "previous": "上一步",
+    "loading": "加载中...",
+    "retry": "重试"
+  },
+  "status": {
+    "active": "活跃",
+    "inactive": "非活跃",
+    "pending": "待处理",
+    "completed": "已完成",
+    "failed": "失败",
+    "draft": "草稿",
+    "published": "已发布",
+    "archived": "已归档"
+  },
+  "time": {
+    "now": "刚刚",
+    "minutes_ago": "{{count}}分钟前",
+    "hours_ago": "{{count}}小时前",
+    "days_ago": "{{count}}天前",
+    "today": "今天",
+    "yesterday": "昨天",
+    "tomorrow": "明天"
+  },
+  "accessibility": {
+    "skip_to_content": "跳转到主要内容",
+    "skip_to_nav": "跳转到导航",
+    "skip_to_search": "跳转到搜索",
+    "loading": "正在加载，请稍候",
+    "loaded": "内容已加载",
+    "error": "发生错误"
+  },
+  "pagination": {
+    "page": "第{{current}}页，共{{total}}页",
+    "first": "第一页",
+    "last": "最后一页",
+    "next": "下一页",
+    "previous": "上一页",
+    "items_per_page": "每页显示数量"
+  },
+  "validation": {
+    "required": "此字段为必填项",
+    "email": "请输入有效的电子邮件地址",
+    "min_length": "至少需要{{min}}个字符",
+    "max_length": "不能超过{{max}}个字符"
+  }
+}

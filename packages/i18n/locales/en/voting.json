@@ -1,0 +1,73 @@
+{
+  "vote": {
+    "title": "Cast Your Vote",
+    "legend": "Select your vote for {{billTitle}}",
+    "choices": {
+      "yes": "Yes, I support this bill",
+      "no": "No, I oppose this bill",
+      "abstain": "Abstain from voting"
+    },
+    "descriptions": {
+      "yes": "Your vote will be counted in favor of this bill",
+      "no": "Your vote will be counted against this bill",
+      "abstain": "Your vote will not be counted for or against"
+    },
+    "selected": "You selected: {{choice}}",
+    "confirm": {
+      "title": "Confirm Your Vote",
+      "message": "You are about to vote {{choice}} on {{billTitle}}. This action cannot be undone until voting closes.",
+      "button": "Confirm Vote",
+      "cancel": "Change My Vote"
+    },
+    "success": {
+      "title": "Vote Recorded",
+      "message": "Your vote has been securely recorded. You can verify it anytime.",
+      "viewReceipt": "View Receipt",
+      "returnToBills": "Return to Bills"
+    },
+    "delegation": {
+      "notice": "Your vote will be cast by {{delegateName}} on your behalf.",
+      "override": "Vote Directly Instead",
+      "delegated": "Delegated to {{delegateName}}"
+    },
+    "deadline": {
+      "remaining": {
+        "one": "{{count}} day remaining",
+        "other": "{{count}} days remaining"
+      },
+      "hours_remaining": {
+        "one": "{{count}} hour remaining",
+        "other": "{{count}} hours remaining"
+      },
+      "ending_soon": "Voting ends in {{hours}} hours",
+      "ended": "Voting has ended",
+      "not_started": "Voting begins {{date}}"
+    },
+    "stats": {
+      "total_votes": {
+        "one": "{{count}} vote cast",
+        "other": "{{count}} votes cast"
+      },
+      "participation": "{{percent}} participation rate",
+      "yes_votes": "{{count}} votes in favor",
+      "no_votes": "{{count}} votes against",
+      "abstentions": "{{count}} abstentions"
+    }
+  },
+  "receipt": {
+    "title": "Vote Receipt",
+    "id": "Receipt ID",
+    "timestamp": "Recorded at",
+    "bill": "Bill",
+    "your_vote": "Your Vote",
+    "verification": "Verification Code",
+    "print": "Print Receipt",
+    "download": "Download Receipt"
+  },
+  "history": {
+    "title": "Voting History",
+    "no_votes": "You haven't cast any votes yet.",
+    "filter_by_date": "Filter by date",
+    "filter_by_category": "Filter by category"
+  }
+}

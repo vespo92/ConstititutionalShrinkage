@@ -1,0 +1,70 @@
+{
+  "vote": {
+    "title": "投出您的一票",
+    "legend": "为{{billTitle}}选择您的投票",
+    "choices": {
+      "yes": "是，我支持这项法案",
+      "no": "否，我反对这项法案",
+      "abstain": "弃权"
+    },
+    "descriptions": {
+      "yes": "您的投票将计入支持该法案",
+      "no": "您的投票将计入反对该法案",
+      "abstain": "您的投票不会计入支持或反对"
+    },
+    "selected": "您选择了：{{choice}}",
+    "confirm": {
+      "title": "确认您的投票",
+      "message": "您即将对{{billTitle}}投票{{choice}}。在投票结束前，此操作无法撤销。",
+      "button": "确认投票",
+      "cancel": "更改我的投票"
+    },
+    "success": {
+      "title": "投票已记录",
+      "message": "您的投票已被安全记录。您可以随时进行验证。",
+      "viewReceipt": "查看收据",
+      "returnToBills": "返回法案列表"
+    },
+    "delegation": {
+      "notice": "您的投票将由{{delegateName}}代为投出。",
+      "override": "直接投票",
+      "delegated": "已委托给{{delegateName}}"
+    },
+    "deadline": {
+      "remaining": {
+        "other": "还剩{{count}}天"
+      },
+      "hours_remaining": {
+        "other": "还剩{{count}}小时"
+      },
+      "ending_soon": "投票将在{{hours}}小时后结束",
+      "ended": "投票已结束",
+      "not_started": "投票将于{{date}}开始"
+    },
+    "stats": {
+      "total_votes": {
+        "other": "已投{{count}}票"
+      },
+      "participation": "{{percent}}参与率",
+      "yes_votes": "{{count}}票支持",
+      "no_votes": "{{count}}票反对",
+      "abstentions": "{{count}}票弃权"
+    }
+  },
+  "receipt": {
+    "title": "投票收据",
+    "id": "收据编号",
+    "timestamp": "记录时间",
+    "bill": "法案",
+    "your_vote": "您的投票",
+    "verification": "验证码",
+    "print": "打印收据",
+    "download": "下载收据"
+  },
+  "history": {
+    "title": "投票历史",
+    "no_votes": "您尚未投过票。",
+    "filter_by_date": "按日期筛选",
+    "filter_by_category": "按类别筛选"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "delegation": {
+    "title": "Delegation",
+    "subtitle": "Delegate your voting power to trusted representatives",
+    "my_delegates": "My Delegates",
+    "my_delegators": "People Who Delegated to Me",
+    "no_delegates": "You haven't delegated your vote to anyone yet.",
+    "no_delegators": "No one has delegated their vote to you yet."
+  },
+  "delegate": {
+    "add": "Add Delegate",
+    "remove": "Remove Delegate",
+    "search": "Search for a delegate",
+    "select_topics": "Select Topics",
+    "all_topics": "All Topics",
+    "specific_topics": "Specific Topics Only"
+  },
+  "topics": {
+    "economy": "Economy & Finance",
+    "education": "Education",
+    "environment": "Environment",
+    "healthcare": "Healthcare",
+    "infrastructure": "Infrastructure",
+    "justice": "Justice & Legal",
+    "defense": "Defense & Security",
+    "social": "Social Services",
+    "technology": "Technology",
+    "foreign": "Foreign Affairs"
+  },
+  "profile": {
+    "voting_record": "Voting Record",
+    "alignment": "Alignment with you",
+    "delegators_count": {
+      "one": "{{count}} person delegated",
+      "other": "{{count}} people delegated"
+    },
+    "active_since": "Active since {{date}}",
+    "total_votes": {
+      "one": "{{count}} vote cast",
+      "other": "{{count}} votes cast"
+    }
+  },
+  "confirmation": {
+    "add_title": "Confirm Delegation",
+    "add_message": "You are about to delegate your voting power for {{topics}} to {{delegate}}. They will vote on your behalf for these topics.",
+    "remove_title": "Remove Delegation",
+    "remove_message": "Are you sure you want to remove {{delegate}} as your delegate for {{topics}}?"
+  },
+  "notifications": {
+    "delegate_added": "{{delegate}} is now your delegate for {{topics}}",
+    "delegate_removed": "{{delegate}} is no longer your delegate for {{topics}}",
+    "vote_cast": "{{delegate}} cast a vote on your behalf for {{bill}}"
+  },
+  "transparency": {
+    "title": "Delegation Chain",
+    "your_vote": "Your Vote",
+    "delegated_to": "Delegated to",
+    "final_voter": "Final Voter",
+    "chain_depth": "Chain Depth: {{depth}}"
+  }
+}

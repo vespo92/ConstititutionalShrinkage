@@ -1,0 +1,73 @@
+{
+  "vote": {
+    "title": "Emitir Su Voto",
+    "legend": "Seleccione su voto para {{billTitle}}",
+    "choices": {
+      "yes": "Sí, apoyo este proyecto de ley",
+      "no": "No, me opongo a este proyecto de ley",
+      "abstain": "Abstenerme de votar"
+    },
+    "descriptions": {
+      "yes": "Su voto se contará a favor de este proyecto de ley",
+      "no": "Su voto se contará en contra de este proyecto de ley",
+      "abstain": "Su voto no se contará ni a favor ni en contra"
+    },
+    "selected": "Usted seleccionó: {{choice}}",
+    "confirm": {
+      "title": "Confirmar Su Voto",
+      "message": "Está a punto de votar {{choice}} en {{billTitle}}. Esta acción no se puede deshacer hasta que cierre la votación.",
+      "button": "Confirmar Voto",
+      "cancel": "Cambiar Mi Voto"
+    },
+    "success": {
+      "title": "Voto Registrado",
+      "message": "Su voto ha sido registrado de forma segura. Puede verificarlo en cualquier momento.",
+      "viewReceipt": "Ver Recibo",
+      "returnToBills": "Volver a Proyectos de Ley"
+    },
+    "delegation": {
+      "notice": "Su voto será emitido por {{delegateName}} en su nombre.",
+      "override": "Votar Directamente",
+      "delegated": "Delegado a {{delegateName}}"
+    },
+    "deadline": {
+      "remaining": {
+        "one": "{{count}} día restante",
+        "other": "{{count}} días restantes"
+      },
+      "hours_remaining": {
+        "one": "{{count}} hora restante",
+        "other": "{{count}} horas restantes"
+      },
+      "ending_soon": "La votación termina en {{hours}} horas",
+      "ended": "La votación ha terminado",
+      "not_started": "La votación comienza el {{date}}"
+    },
+    "stats": {
+      "total_votes": {
+        "one": "{{count}} voto emitido",
+        "other": "{{count}} votos emitidos"
+      },
+      "participation": "{{percent}} tasa de participación",
+      "yes_votes": "{{count}} votos a favor",
+      "no_votes": "{{count}} votos en contra",
+      "abstentions": "{{count}} abstenciones"
+    }
+  },
+  "receipt": {
+    "title": "Recibo de Voto",
+    "id": "ID de Recibo",
+    "timestamp": "Registrado el",
+    "bill": "Proyecto de Ley",
+    "your_vote": "Su Voto",
+    "verification": "Código de Verificación",
+    "print": "Imprimir Recibo",
+    "download": "Descargar Recibo"
+  },
+  "history": {
+    "title": "Historial de Votación",
+    "no_votes": "Aún no ha emitido ningún voto.",
+    "filter_by_date": "Filtrar por fecha",
+    "filter_by_category": "Filtrar por categoría"
+  }
+}

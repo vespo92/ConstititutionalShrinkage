@@ -1,0 +1,73 @@
+{
+  "bill": {
+    "title": "法案",
+    "singular": "法案",
+    "new": "新法案",
+    "draft": "法案草稿",
+    "details": "法案详情",
+    "summary": "摘要",
+    "full_text": "全文",
+    "sponsor": "发起人",
+    "sponsors": "发起人",
+    "co_sponsors": "联合发起人",
+    "introduced": "提出日期",
+    "last_action": "最后操作",
+    "category": "类别",
+    "tags": "标签"
+  },
+  "status": {
+    "introduced": "已提出",
+    "in_committee": "委员会审议中",
+    "voting_open": "投票进行中",
+    "passed": "已通过",
+    "failed": "未通过",
+    "enacted": "已颁布",
+    "vetoed": "已否决",
+    "withdrawn": "已撤回"
+  },
+  "categories": {
+    "economy": "经济与金融",
+    "education": "教育",
+    "environment": "环境",
+    "healthcare": "医疗健康",
+    "infrastructure": "基础设施",
+    "justice": "司法与法律",
+    "defense": "国防与安全",
+    "social": "社会服务",
+    "technology": "科技",
+    "foreign": "外交事务"
+  },
+  "actions": {
+    "read_more": "阅读完整法案",
+    "track": "跟踪此法案",
+    "untrack": "取消跟踪",
+    "share": "分享法案",
+    "discuss": "参与讨论",
+    "propose_amendment": "提议修正案",
+    "view_amendments": "查看修正案",
+    "compare_versions": "比较版本"
+  },
+  "search": {
+    "placeholder": "搜索法案...",
+    "no_results": "未找到符合搜索条件的法案。",
+    "results": {
+      "other": "找到{{count}}项法案"
+    }
+  },
+  "impact": {
+    "title": "影响分析",
+    "fiscal": "财政影响",
+    "social": "社会影响",
+    "environmental": "环境影响",
+    "estimated_cost": "预估成本",
+    "beneficiaries": "受益群体"
+  },
+  "timeline": {
+    "title": "法案时间线",
+    "introduced": "法案提出",
+    "committee_review": "委员会审议",
+    "public_comment": "公众意见征集期",
+    "voting_period": "投票期",
+    "final_decision": "最终决定"
+  }
+}

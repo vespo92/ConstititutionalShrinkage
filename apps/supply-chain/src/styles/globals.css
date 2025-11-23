@@ -1,0 +1,268 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground: 15 23 42;
+  --background: 248 250 252;
+
+  /* Distance tier colors */
+  --distance-local: 34 197 94;
+  --distance-regional: 59 130 246;
+  --distance-national: 234 179 8;
+  --distance-international: 239 68 68;
+
+  /* Supply chain node colors */
+  --node-producer: 16 185 129;
+  --node-distributor: 99 102 241;
+  --node-retailer: 245 158 11;
+  --node-consumer: 139 92 246;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground: 248 250 252;
+    --background: 15 23 42;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-50;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  /* Card Styles */
+  .card {
+    @apply bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700;
+  }
+
+  .card-header {
+    @apply px-6 py-4 border-b border-slate-200 dark:border-slate-700;
+  }
+
+  .card-body {
+    @apply p-6;
+  }
+
+  /* Metric Card Styles */
+  .metric-card {
+    @apply card p-6;
+  }
+
+  .metric-value {
+    @apply text-3xl font-bold text-slate-900 dark:text-white;
+  }
+
+  .metric-label {
+    @apply text-sm font-medium text-slate-500 dark:text-slate-400;
+  }
+
+  .metric-trend {
+    @apply text-sm font-medium;
+  }
+
+  .metric-trend-up {
+    @apply text-green-600 dark:text-green-400;
+  }
+
+  .metric-trend-down {
+    @apply text-red-600 dark:text-red-400;
+  }
+
+  /* Button Styles */
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+  }
+
+  .btn-secondary {
+    @apply btn bg-slate-100 text-slate-900 hover:bg-slate-200 focus:ring-slate-500 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600;
+  }
+
+  .btn-outline {
+    @apply btn border border-slate-300 text-slate-700 hover:bg-slate-50 focus:ring-slate-500 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800;
+  }
+
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+  }
+
+  /* Distance Tier Badges */
+  .tier-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .tier-local {
+    @apply tier-badge bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+  }
+
+  .tier-regional {
+    @apply tier-badge bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200;
+  }
+
+  .tier-national {
+    @apply tier-badge bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+  }
+
+  .tier-international {
+    @apply tier-badge bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
+  }
+
+  /* Transparency Score Badges */
+  .score-excellent {
+    @apply text-green-600 dark:text-green-400;
+  }
+
+  .score-good {
+    @apply text-lime-600 dark:text-lime-400;
+  }
+
+  .score-moderate {
+    @apply text-yellow-600 dark:text-yellow-400;
+  }
+
+  .score-poor {
+    @apply text-orange-600 dark:text-orange-400;
+  }
+
+  .score-none {
+    @apply text-red-600 dark:text-red-400;
+  }
+
+  /* Table Styles */
+  .data-table {
+    @apply w-full text-sm text-left text-slate-600 dark:text-slate-300;
+  }
+
+  .data-table thead {
+    @apply text-xs uppercase bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300;
+  }
+
+  .data-table th {
+    @apply px-6 py-3;
+  }
+
+  .data-table td {
+    @apply px-6 py-4;
+  }
+
+  .data-table tbody tr {
+    @apply border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800;
+  }
+
+  /* Form Styles */
+  .form-input {
+    @apply block w-full rounded-lg border border-slate-300 dark:border-slate-600 px-4 py-2 text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 focus:border-primary-500 focus:ring-primary-500;
+  }
+
+  .form-select {
+    @apply form-input;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1;
+  }
+
+  /* Navigation */
+  .nav-link {
+    @apply flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors;
+  }
+
+  .nav-link-active {
+    @apply nav-link bg-primary-50 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300;
+  }
+
+  .nav-link-inactive {
+    @apply nav-link text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800;
+  }
+
+  /* Network Graph */
+  .graph-container {
+    @apply w-full h-[600px] bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700;
+  }
+
+  .graph-node {
+    @apply cursor-pointer;
+  }
+
+  .graph-node-label {
+    @apply text-xs font-medium fill-slate-700 dark:fill-slate-300;
+  }
+
+  /* Journey Timeline */
+  .journey-timeline {
+    @apply relative pl-8 space-y-6;
+  }
+
+  .journey-timeline::before {
+    @apply absolute left-3 top-0 bottom-0 w-0.5 bg-slate-200 dark:bg-slate-700;
+    content: '';
+  }
+
+  .journey-node {
+    @apply relative;
+  }
+
+  .journey-node::before {
+    @apply absolute -left-5 w-4 h-4 rounded-full border-2 border-white dark:border-slate-800;
+    content: '';
+  }
+
+  .journey-node-verified::before {
+    @apply bg-green-500;
+  }
+
+  .journey-node-unverified::before {
+    @apply bg-yellow-500;
+  }
+}
+
+@layer utilities {
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .animate-slide-in {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Graph utilities */
+  .graph-edge-local {
+    stroke: rgb(var(--distance-local));
+  }
+
+  .graph-edge-regional {
+    stroke: rgb(var(--distance-regional));
+  }
+
+  .graph-edge-national {
+    stroke: rgb(var(--distance-national));
+  }
+
+  .graph-edge-international {
+    stroke: rgb(var(--distance-international));
+  }
+}

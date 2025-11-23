@@ -1,0 +1,70 @@
+# Trivy Container Security Scanner Configuration
+# Constitutional Shrinkage Platform
+
+# Severity levels to scan for
+severity:
+  - CRITICAL
+  - HIGH
+  - MEDIUM
+
+# Vulnerability types
+vuln-type:
+  - os
+  - library
+
+# Security checks
+security-checks:
+  - vuln
+  - config
+  - secret
+
+# Ignore unfixed vulnerabilities
+ignore-unfixed: false
+
+# Exit code when vulnerabilities found
+exit-code: 1
+
+# Output format
+format: json
+
+# Cache directory
+cache-dir: /tmp/trivy-cache
+
+# Database repository
+db-repository: ghcr.io/aquasecurity/trivy-db
+
+# Skip database update (for offline mode)
+skip-db-update: false
+
+# Timeout
+timeout: 10m
+
+# Files to scan for secrets
+secret:
+  config: |
+    rules:
+      - id: aws-access-key
+        description: AWS Access Key
+        regex: AKIA[0-9A-Z]{16}
+        severity: CRITICAL
+      - id: aws-secret-key
+        description: AWS Secret Key
+        regex: (?i)aws(.{0,20})?(?-i)['\"][0-9a-zA-Z\/+]{40}['\"]
+        severity: CRITICAL
+      - id: github-token
+        description: GitHub Token
+        regex: ghp_[0-9a-zA-Z]{36}
+        severity: CRITICAL
+      - id: private-key
+        description: Private Key
+        regex: -----BEGIN (?:RSA|EC|DSA|OPENSSH) PRIVATE KEY-----
+        severity: CRITICAL
+      - id: jwt-secret
+        description: JWT Secret
+        regex: (?i)jwt(.{0,20})?secret(.{0,20})?['\"][^'\"]{20,}['\"]
+        severity: HIGH
+
+# Kubernetes specific checks
+kubernetes:
+  exclude-owned-by-workload: false
+  disable-node-collector: false

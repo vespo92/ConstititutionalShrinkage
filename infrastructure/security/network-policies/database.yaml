@@ -1,0 +1,194 @@
+# Database Network Policy
+# Constitutional Shrinkage Platform
+#
+# Restricts database access to authorized services only
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: database-policy
+  namespace: default
+  labels:
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/component: security
+    security.constitutional-shrinkage.gov/tier: data
+spec:
+  podSelector:
+    matchLabels:
+      app: postgresql
+  policyTypes:
+    - Ingress
+    - Egress
+
+  # Ingress rules - only allow from specific services
+  ingress:
+    # Allow from API Gateway
+    - from:
+        - podSelector:
+            matchLabels:
+              app: api-gateway
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Allow from Auth Service
+    - from:
+        - podSelector:
+            matchLabels:
+              app: auth-service
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Allow from Security Service
+    - from:
+        - podSelector:
+            matchLabels:
+              app: security-service
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Allow from Notification Service
+    - from:
+        - podSelector:
+            matchLabels:
+              app: notification-service
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Allow from Search Service
+    - from:
+        - podSelector:
+            matchLabels:
+              app: search-service
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Allow from User Service
+    - from:
+        - podSelector:
+            matchLabels:
+              app: user-service
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Allow from database backup jobs
+    - from:
+        - podSelector:
+            matchLabels:
+              app: db-backup
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Allow replication from standby
+    - from:
+        - podSelector:
+            matchLabels:
+              app: postgresql
+              role: standby
+      ports:
+        - protocol: TCP
+          port: 5432
+
+  # Egress rules - database should only respond, not initiate
+  egress:
+    # Allow replication to standby
+    - to:
+        - podSelector:
+            matchLabels:
+              app: postgresql
+              role: standby
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Allow to backup storage
+    - to:
+        - ipBlock:
+            cidr: 10.0.100.0/24
+      ports:
+        - protocol: TCP
+          port: 443
+
+---
+# Redis Network Policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redis-policy
+  namespace: default
+  labels:
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/component: security
+spec:
+  podSelector:
+    matchLabels:
+      app: redis
+  policyTypes:
+    - Ingress
+    - Egress
+
+  ingress:
+    # Allow from all application services
+    - from:
+        - podSelector:
+            matchLabels:
+              tier: application
+      ports:
+        - protocol: TCP
+          port: 6379
+
+    # Allow from API Gateway
+    - from:
+        - podSelector:
+            matchLabels:
+              app: api-gateway
+      ports:
+        - protocol: TCP
+          port: 6379
+
+    # Allow from Auth Service
+    - from:
+        - podSelector:
+            matchLabels:
+              app: auth-service
+      ports:
+        - protocol: TCP
+          port: 6379
+
+    # Allow from Security Service
+    - from:
+        - podSelector:
+            matchLabels:
+              app: security-service
+      ports:
+        - protocol: TCP
+          port: 6379
+
+    # Allow Redis Cluster communication
+    - from:
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - protocol: TCP
+          port: 6379
+        - protocol: TCP
+          port: 16379
+
+  egress:
+    # Allow Redis Cluster communication
+    - to:
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - protocol: TCP
+          port: 6379
+        - protocol: TCP
+          port: 16379

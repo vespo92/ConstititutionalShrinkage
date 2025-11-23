@@ -1,0 +1,28 @@
+{
+  "name": "@constitutional-shrinkage/security-tests",
+  "version": "1.0.0",
+  "description": "Comprehensive security testing suite for Constitutional Shrinkage platform",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:penetration": "vitest run --config vitest.penetration.config.ts",
+    "test:compliance": "vitest run --config vitest.compliance.config.ts",
+    "test:infrastructure": "vitest run --config vitest.infrastructure.config.ts",
+    "test:all": "npm run test:penetration && npm run test:compliance && npm run test:infrastructure"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0",
+    "@vitest/coverage-v8": "^1.0.0"
+  },
+  "dependencies": {
+    "@constitutional-shrinkage/security": "workspace:*",
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0-rc.12",
+    "puppeteer": "^21.6.0"
+  }
+}

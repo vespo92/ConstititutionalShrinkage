@@ -1,0 +1,200 @@
+# Kubernetes cert-manager Configuration
+# Constitutional Shrinkage Platform
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager
+  labels:
+    app.kubernetes.io/name: cert-manager
+    app.kubernetes.io/component: security
+
+---
+# ClusterIssuer for Let's Encrypt Production
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: security@constitutional-shrinkage.gov
+    privateKeySecretRef:
+      name: letsencrypt-prod-account-key
+    solvers:
+      - http01:
+          ingress:
+            class: nginx
+            podTemplate:
+              spec:
+                nodeSelector:
+                  kubernetes.io/os: linux
+
+---
+# ClusterIssuer for Let's Encrypt Staging (for testing)
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: security@constitutional-shrinkage.gov
+    privateKeySecretRef:
+      name: letsencrypt-staging-account-key
+    solvers:
+      - http01:
+          ingress:
+            class: nginx
+
+---
+# Internal CA for service-to-service mTLS
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: internal-ca
+spec:
+  ca:
+    secretName: internal-ca-key-pair
+
+---
+# Root CA Certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: internal-ca
+  namespace: cert-manager
+spec:
+  isCA: true
+  commonName: Constitutional Shrinkage Internal CA
+  secretName: internal-ca-key-pair
+  privateKey:
+    algorithm: ECDSA
+    size: 384
+  duration: 87600h # 10 years
+  renewBefore: 8760h # 1 year
+  issuerRef:
+    name: selfsigned-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+
+---
+# Self-signed issuer for CA bootstrap
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned-issuer
+spec:
+  selfSigned: {}
+
+---
+# Certificate for API Gateway
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: api-gateway-tls
+  namespace: default
+spec:
+  secretName: api-gateway-tls
+  duration: 2160h # 90 days
+  renewBefore: 360h # 15 days
+  subject:
+    organizations:
+      - Constitutional Shrinkage Platform
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+    - api.constitutional-shrinkage.gov
+    - api-gateway.default.svc.cluster.local
+    - api-gateway
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+---
+# Certificate for Auth Service (internal)
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: auth-service-tls
+  namespace: default
+spec:
+  secretName: auth-service-tls
+  duration: 2160h
+  renewBefore: 360h
+  subject:
+    organizations:
+      - Constitutional Shrinkage Platform
+  isCA: false
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+    - auth-service.default.svc.cluster.local
+    - auth-service
+  issuerRef:
+    name: internal-ca
+    kind: ClusterIssuer
+
+---
+# Certificate for Security Service (internal)
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: security-service-tls
+  namespace: default
+spec:
+  secretName: security-service-tls
+  duration: 2160h
+  renewBefore: 360h
+  subject:
+    organizations:
+      - Constitutional Shrinkage Platform
+  isCA: false
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+    - security-service.default.svc.cluster.local
+    - security-service
+  issuerRef:
+    name: internal-ca
+    kind: ClusterIssuer
+
+---
+# Certificate for Database connections
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: database-client-tls
+  namespace: default
+spec:
+  secretName: database-client-tls
+  duration: 2160h
+  renewBefore: 360h
+  subject:
+    organizations:
+      - Constitutional Shrinkage Platform
+  isCA: false
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  usages:
+    - client auth
+  dnsNames:
+    - database.default.svc.cluster.local
+  issuerRef:
+    name: internal-ca
+    kind: ClusterIssuer

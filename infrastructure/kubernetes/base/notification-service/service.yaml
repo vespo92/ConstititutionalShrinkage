@@ -1,0 +1,13 @@
+# Constitutional Shrinkage - Notification Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+  namespace: constitutional
+spec:
+  type: ClusterIP
+  selector:
+    app: notification-service
+  ports:
+    - port: 80
+      targetPort: 3003

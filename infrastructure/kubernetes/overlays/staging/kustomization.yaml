@@ -1,0 +1,71 @@
+# Constitutional Shrinkage - Staging Overlay
+# Agent_14: DevOps & CI/CD Enhancement
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: constitutional-staging
+
+resources:
+  - ../../base
+
+namePrefix: staging-
+nameSuffix: ""
+
+commonLabels:
+  environment: staging
+
+patches:
+  - target:
+      kind: Namespace
+      name: constitutional
+    patch: |
+      - op: replace
+        path: /metadata/name
+        value: constitutional-staging
+
+  - target:
+      kind: Deployment
+    patch: |
+      - op: replace
+        path: /spec/replicas
+        value: 2
+
+  - target:
+      kind: Ingress
+      name: constitutional-ingress
+    patch: |
+      - op: replace
+        path: /spec/rules/0/host
+        value: api-staging.constitutional.dev
+      - op: replace
+        path: /spec/rules/1/host
+        value: app-staging.constitutional.dev
+      - op: replace
+        path: /spec/tls/0/hosts
+        value:
+          - api-staging.constitutional.dev
+          - app-staging.constitutional.dev
+
+configMapGenerator:
+  - name: app-config
+    behavior: merge
+    literals:
+      - NODE_ENV=staging
+
+images:
+  - name: api-gateway
+    newName: ghcr.io/vespo92/constitutional-shrinkage/api-gateway
+    newTag: staging
+  - name: auth-service
+    newName: ghcr.io/vespo92/constitutional-shrinkage/auth-service
+    newTag: staging
+  - name: notification-service
+    newName: ghcr.io/vespo92/constitutional-shrinkage/notification-service
+    newTag: staging
+  - name: search-service
+    newName: ghcr.io/vespo92/constitutional-shrinkage/search-service
+    newTag: staging
+  - name: citizen-portal
+    newName: ghcr.io/vespo92/constitutional-shrinkage/citizen-portal
+    newTag: staging

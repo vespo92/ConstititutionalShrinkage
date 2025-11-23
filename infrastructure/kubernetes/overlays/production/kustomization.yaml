@@ -1,0 +1,88 @@
+# Constitutional Shrinkage - Production Overlay
+# Agent_14: DevOps & CI/CD Enhancement
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: constitutional-production
+
+resources:
+  - ../../base
+
+namePrefix: prod-
+nameSuffix: ""
+
+commonLabels:
+  environment: production
+
+patches:
+  - target:
+      kind: Namespace
+      name: constitutional
+    patch: |
+      - op: replace
+        path: /metadata/name
+        value: constitutional-production
+
+  - target:
+      kind: Deployment
+    patch: |
+      - op: replace
+        path: /spec/replicas
+        value: 3
+
+  - target:
+      kind: Deployment
+      name: api-gateway
+    patch: |
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: "512Mi"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: "1Gi"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: "500m"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/cpu
+        value: "1000m"
+
+  - target:
+      kind: Ingress
+      name: constitutional-ingress
+    patch: |
+      - op: replace
+        path: /spec/rules/0/host
+        value: api.constitutional.dev
+      - op: replace
+        path: /spec/rules/1/host
+        value: app.constitutional.dev
+      - op: replace
+        path: /spec/tls/0/hosts
+        value:
+          - api.constitutional.dev
+          - app.constitutional.dev
+
+configMapGenerator:
+  - name: app-config
+    behavior: merge
+    literals:
+      - NODE_ENV=production
+
+images:
+  - name: api-gateway
+    newName: ghcr.io/vespo92/constitutional-shrinkage/api-gateway
+    newTag: latest
+  - name: auth-service
+    newName: ghcr.io/vespo92/constitutional-shrinkage/auth-service
+    newTag: latest
+  - name: notification-service
+    newName: ghcr.io/vespo92/constitutional-shrinkage/notification-service
+    newTag: latest
+  - name: search-service
+    newName: ghcr.io/vespo92/constitutional-shrinkage/search-service
+    newTag: latest
+  - name: citizen-portal
+    newName: ghcr.io/vespo92/constitutional-shrinkage/citizen-portal
+    newTag: latest

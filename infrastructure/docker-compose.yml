@@ -1,12 +1,12 @@
-# Constitutional Shrinkage - Infrastructure Docker Compose
-# Agent 3: Database & Schema Infrastructure
-# Generated: 2025-11-22
+# Constitutional Shrinkage - Enhanced Docker Compose
+# Agent_14: DevOps & CI/CD Enhancement
+# Generated: 2025-11-23
 
 version: '3.8'
 
 services:
   # ==========================================================================
-  # PostgreSQL Database
+  # Database Services
   # ==========================================================================
   postgres:
     image: postgres:16-alpine
@@ -32,9 +32,6 @@ services:
     networks:
       - constitutional_network
 
-  # ==========================================================================
-  # Redis Cache
-  # ==========================================================================
   redis:
     image: redis:7-alpine
     container_name: constitutional_redis
@@ -52,9 +49,6 @@ services:
     networks:
       - constitutional_network
 
-  # ==========================================================================
-  # Elasticsearch (for full-text search)
-  # ==========================================================================
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
     container_name: constitutional_elasticsearch
@@ -78,7 +72,184 @@ services:
       - constitutional_network
 
   # ==========================================================================
-  # pgAdmin (Database Management UI)
+  # Application Services
+  # ==========================================================================
+  api-gateway:
+    build:
+      context: ..
+      dockerfile: infrastructure/docker/api-gateway.Dockerfile
+    container_name: constitutional_api_gateway
+    restart: unless-stopped
+    ports:
+      - "${API_GATEWAY_PORT:-3001}:3001"
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3001
+      DATABASE_URL: postgresql://${POSTGRES_USER:-constitutional}:${POSTGRES_PASSWORD:-constitutional_dev_2025}@postgres:5432/${POSTGRES_DB:-constitutional_shrinkage}
+      REDIS_URL: redis://redis:6379
+      AUTH_SERVICE_URL: http://auth-service:3002
+      NOTIFICATION_SERVICE_URL: http://notification-service:3003
+      SEARCH_SERVICE_URL: http://search-service:3004
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - constitutional_network
+    profiles:
+      - services
+
+  auth-service:
+    build:
+      context: ..
+      dockerfile: infrastructure/docker/auth-service.Dockerfile
+    container_name: constitutional_auth_service
+    restart: unless-stopped
+    ports:
+      - "${AUTH_SERVICE_PORT:-3002}:3002"
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3002
+      DATABASE_URL: postgresql://${POSTGRES_USER:-constitutional}:${POSTGRES_PASSWORD:-constitutional_dev_2025}@postgres:5432/${POSTGRES_DB:-constitutional_shrinkage}
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-24h}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - constitutional_network
+    profiles:
+      - services
+
+  notification-service:
+    build:
+      context: ..
+      dockerfile: infrastructure/docker/notification-service.Dockerfile
+    container_name: constitutional_notification_service
+    restart: unless-stopped
+    ports:
+      - "${NOTIFICATION_SERVICE_PORT:-3003}:3003"
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3003
+      REDIS_URL: redis://redis:6379
+      SMTP_HOST: ${SMTP_HOST:-mailhog}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - constitutional_network
+    profiles:
+      - services
+
+  search-service:
+    build:
+      context: ..
+      dockerfile: infrastructure/docker/search-service.Dockerfile
+    container_name: constitutional_search_service
+    restart: unless-stopped
+    ports:
+      - "${SEARCH_SERVICE_PORT:-3004}:3004"
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3004
+      DATABASE_URL: postgresql://${POSTGRES_USER:-constitutional}:${POSTGRES_PASSWORD:-constitutional_dev_2025}@postgres:5432/${POSTGRES_DB:-constitutional_shrinkage}
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    depends_on:
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - constitutional_network
+    profiles:
+      - services
+
+  citizen-portal:
+    build:
+      context: ..
+      dockerfile: infrastructure/docker/citizen-portal.Dockerfile
+    container_name: constitutional_citizen_portal
+    restart: unless-stopped
+    ports:
+      - "${CITIZEN_PORTAL_PORT:-3000}:3000"
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      NEXT_PUBLIC_API_URL: http://api-gateway:3001
+    depends_on:
+      - api-gateway
+    networks:
+      - constitutional_network
+    profiles:
+      - services
+
+  # ==========================================================================
+  # Monitoring Services
+  # ==========================================================================
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    container_name: constitutional_prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=15d'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/prometheus/alerts:/etc/prometheus/alerts:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    networks:
+      - constitutional_network
+    profiles:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: constitutional_grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: false
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "${GRAFANA_PORT:-3030}:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - constitutional_network
+    profiles:
+      - monitoring
+
+  alertmanager:
+    image: prom/alertmanager:v0.26.0
+    container_name: constitutional_alertmanager
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager_data:/alertmanager
+    ports:
+      - "${ALERTMANAGER_PORT:-9093}:9093"
+    networks:
+      - constitutional_network
+    profiles:
+      - monitoring
+
+  # ==========================================================================
+  # Development Tools
   # ==========================================================================
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -100,9 +271,6 @@ services:
     profiles:
       - tools
 
-  # ==========================================================================
-  # Redis Commander (Redis UI)
-  # ==========================================================================
   redis-commander:
     image: rediscommander/redis-commander:latest
     container_name: constitutional_redis_commander
@@ -114,6 +282,18 @@ services:
     depends_on:
       redis:
         condition: service_healthy
+    networks:
+      - constitutional_network
+    profiles:
+      - tools
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: constitutional_mailhog
+    restart: unless-stopped
+    ports:
+      - "${MAILHOG_SMTP_PORT:-1025}:1025"
+      - "${MAILHOG_UI_PORT:-8025}:8025"
     networks:
       - constitutional_network
     profiles:
@@ -137,5 +317,11 @@ volumes:
     name: constitutional_redis_data
   elasticsearch_data:
     name: constitutional_elasticsearch_data
+  prometheus_data:
+    name: constitutional_prometheus_data
+  grafana_data:
+    name: constitutional_grafana_data
+  alertmanager_data:
+    name: constitutional_alertmanager_data
   pgadmin_data:
     name: constitutional_pgadmin_data

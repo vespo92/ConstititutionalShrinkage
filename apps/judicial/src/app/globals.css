@@ -1,0 +1,242 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --judicial-primary: 30 58 95;
+    --judicial-secondary: 212 175 55;
+    --judicial-dark: 15 23 42;
+    --judicial-light: 248 250 252;
+
+    --compliance-compliant: 16 185 129;
+    --compliance-warning: 245 158 11;
+    --compliance-violation: 239 68 68;
+
+    --severity-minor: 251 191 36;
+    --severity-major: 249 115 22;
+    --severity-critical: 220 38 38;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  /* Legal document styling */
+  .legal-text {
+    @apply font-legal leading-relaxed;
+  }
+
+  /* Monospace for legal citations */
+  .citation {
+    @apply font-mono text-sm;
+  }
+}
+
+@layer components {
+  /* Card hover effects */
+  .card-interactive {
+    @apply transition-all duration-200 hover:shadow-lg hover:border-judicial-primary/50;
+  }
+
+  /* Status indicators */
+  .status-dot {
+    @apply w-2 h-2 rounded-full;
+  }
+
+  .status-dot-compliant {
+    @apply bg-compliance-compliant;
+  }
+
+  .status-dot-warning {
+    @apply bg-compliance-warning;
+  }
+
+  .status-dot-violation {
+    @apply bg-compliance-violation;
+  }
+
+  /* Loading skeleton */
+  .skeleton {
+    @apply bg-gray-200 dark:bg-slate-700 rounded animate-pulse;
+  }
+
+  /* Print styles for legal documents */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+
+    .print-only {
+      display: block !important;
+    }
+
+    .legal-document {
+      @apply text-black bg-white;
+      font-size: 12pt;
+      line-height: 1.6;
+    }
+  }
+}
+
+@layer utilities {
+  /* Text gradients */
+  .text-gradient-judicial {
+    @apply bg-gradient-to-r from-judicial-primary to-judicial-secondary bg-clip-text text-transparent;
+  }
+
+  /* Focus ring for accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-judicial-primary focus:ring-offset-2;
+  }
+
+  /* Scrollbar styling */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.gray.400') theme('colors.gray.100');
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-slate-800;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-gray-400 dark:bg-slate-600 rounded-full;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500 dark:bg-slate-500;
+  }
+
+  /* Line clamp utilities */
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .animate-slide-down {
+    animation: slideDown 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Dark mode transitions */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
+
+/* Highlight for compliance issues in bill text */
+mark.compliance-highlight {
+  @apply bg-compliance-warning/30 px-1 rounded;
+}
+
+mark.violation-highlight {
+  @apply bg-compliance-violation/30 px-1 rounded;
+}
+
+/* Table styling */
+table {
+  @apply w-full border-collapse;
+}
+
+th {
+  @apply text-left font-semibold;
+}
+
+/* Form element styling */
+input[type="text"],
+input[type="email"],
+input[type="date"],
+textarea,
+select {
+  @apply text-gray-900 dark:text-white;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="date"]:focus,
+textarea:focus,
+select:focus {
+  @apply outline-none ring-2 ring-judicial-primary border-transparent;
+}
+
+/* Tooltip styling */
+[data-tooltip] {
+  @apply relative;
+}
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 pointer-events-none transition-opacity;
+}
+
+[data-tooltip]:hover::after {
+  @apply opacity-100;
+}

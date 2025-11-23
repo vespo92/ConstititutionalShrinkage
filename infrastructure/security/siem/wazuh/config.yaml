@@ -1,0 +1,142 @@
+# Wazuh SIEM Configuration
+# Constitutional Shrinkage Platform
+
+# Wazuh Manager Configuration
+manager:
+  name: constitutional-shrinkage-wazuh
+  cluster:
+    enabled: true
+    name: wazuh-cluster
+    node_name: master-node
+    node_type: master
+    key: "wazuh-cluster-key"
+
+# Logging Configuration
+logging:
+  level: info
+  format: json
+  output:
+    - type: file
+      path: /var/ossec/logs/ossec.log
+    - type: syslog
+      server: syslog.internal:514
+
+# Alerts Configuration
+alerts:
+  log_alert_level: 3
+  email_alert_level: 10
+
+# Integration with Elasticsearch
+elasticsearch:
+  enabled: true
+  hosts:
+    - https://elasticsearch.internal:9200
+  index_prefix: wazuh-alerts
+  ssl:
+    verify: true
+    certificate_authorities:
+      - /etc/wazuh/certs/ca.pem
+
+# Vulnerability Detection
+vulnerability-detector:
+  enabled: true
+  interval: 5m
+  run_on_start: true
+  providers:
+    - name: nvd
+      enabled: true
+      update_interval: 1h
+    - name: debian
+      enabled: true
+      os: ['buster', 'bullseye']
+    - name: ubuntu
+      enabled: true
+      os: ['focal', 'jammy']
+
+# Security Configuration Assessment
+sca:
+  enabled: true
+  interval: 12h
+  policies:
+    - name: CIS Kubernetes Benchmark
+      file: /var/ossec/ruleset/sca/cis_kubernetes.yml
+    - name: CIS Docker Benchmark
+      file: /var/ossec/ruleset/sca/cis_docker.yml
+    - name: PCI-DSS
+      file: /var/ossec/ruleset/sca/pci_dss.yml
+
+# File Integrity Monitoring
+syscheck:
+  disabled: false
+  frequency: 43200  # 12 hours
+  scan_on_start: true
+  directories:
+    - path: /etc
+      check_all: true
+      report_changes: true
+    - path: /usr/bin
+      check_all: true
+    - path: /usr/sbin
+      check_all: true
+    - path: /var/www
+      check_all: true
+      realtime: true
+    - path: /opt/app
+      check_all: true
+      realtime: true
+  ignore:
+    - /etc/mtab
+    - /etc/hosts.deny
+    - /etc/mail/statistics
+    - /etc/random-seed
+    - /etc/adjtime
+
+# Rootcheck
+rootcheck:
+  disabled: false
+  check_files: true
+  check_trojans: true
+  check_dev: true
+  check_sys: true
+  check_pids: true
+  check_ports: true
+  check_if: true
+
+# Log Collection
+localfile:
+  - location: /var/log/syslog
+    log_format: syslog
+  - location: /var/log/auth.log
+    log_format: syslog
+  - location: /var/log/nginx/access.log
+    log_format: nginx
+  - location: /var/log/nginx/error.log
+    log_format: syslog
+  - location: /var/log/app/*.log
+    log_format: json
+
+# Custom Rules
+custom_rules:
+  - id: 100001
+    level: 10
+    description: "Brute force attack detected"
+    match: "authentication failure"
+    frequency: 10
+    timeframe: 120
+
+  - id: 100002
+    level: 12
+    description: "SQL injection attempt"
+    regex: "(?:union.*select|select.*from|insert.*into|delete.*from)"
+
+  - id: 100003
+    level: 15
+    description: "Vote manipulation attempt"
+    program_name: security-service
+    match: "vote_manipulation"
+
+  - id: 100004
+    level: 15
+    description: "Data exfiltration detected"
+    program_name: security-service
+    match: "data_exfiltration"

@@ -1,0 +1,76 @@
+# Constitutional Shrinkage - Prometheus Configuration
+# Agent_14: DevOps & CI/CD Enhancement
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: constitutional-shrinkage
+    env: development
+
+rule_files:
+  - 'alerts/*.yml'
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # API Gateway
+  - job_name: 'api-gateway'
+    static_configs:
+      - targets: ['api-gateway:3001']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # Auth Service
+  - job_name: 'auth-service'
+    static_configs:
+      - targets: ['auth-service:3002']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # Notification Service
+  - job_name: 'notification-service'
+    static_configs:
+      - targets: ['notification-service:3003']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+
+  # Search Service
+  - job_name: 'search-service'
+    static_configs:
+      - targets: ['search-service:3004']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+
+  # PostgreSQL Exporter
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+    scrape_interval: 30s
+
+  # Redis Exporter
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+    scrape_interval: 15s
+
+  # Elasticsearch Exporter
+  - job_name: 'elasticsearch'
+    static_configs:
+      - targets: ['elasticsearch-exporter:9114']
+    scrape_interval: 30s
+
+  # Node Exporter (for host metrics in production)
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 30s

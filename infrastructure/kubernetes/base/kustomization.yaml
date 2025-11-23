@@ -1,0 +1,22 @@
+# Constitutional Shrinkage - Base Kustomization
+# Agent_14: DevOps & CI/CD Enhancement
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: constitutional
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secret.yaml
+  - ingress.yaml
+  - api-gateway
+  - auth-service
+  - notification-service
+  - search-service
+  - citizen-portal
+
+commonLabels:
+  app.kubernetes.io/part-of: constitutional-shrinkage
+  app.kubernetes.io/managed-by: kustomize

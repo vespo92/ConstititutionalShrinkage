@@ -1,0 +1,62 @@
+# Constitutional Shrinkage - Notification Service Deployment
+# Agent_14: DevOps & CI/CD Enhancement
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+  namespace: constitutional
+  labels:
+    app: notification-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3003"
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+      containers:
+        - name: notification-service
+          image: notification-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3003
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: NODE_ENV
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: redis-url
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3003
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3003
+            initialDelaySeconds: 5
+            periodSeconds: 5

@@ -1,0 +1,16 @@
+# Constitutional Shrinkage - ConfigMap
+# Agent_14: DevOps & CI/CD Enhancement
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: constitutional
+data:
+  NODE_ENV: "production"
+  redis-url: "redis://redis:6379"
+  elasticsearch-url: "http://elasticsearch:9200"
+  api-gateway-url: "http://api-gateway:3001"
+  auth-service-url: "http://auth-service:3002"
+  notification-service-url: "http://notification-service:3003"
+  search-service-url: "http://search-service:3004"

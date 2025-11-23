@@ -5,7 +5,7 @@ import { Navigation } from '@/components/layout/Navigation';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { useMockResources, useMockBudget, useMockPersonnel } from '@/hooks/useResources';
-import { cn, formatCurrency, formatNumber, formatPercentage } from '@/lib/utils';
+import { cn, formatCurrency, formatPercentage } from '@/lib/utils';
 
 export default function ResourcesPage() {
   const { data: resourcesData } = useMockResources();

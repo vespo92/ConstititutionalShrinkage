@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { useMockPolicies } from '@/hooks/usePolicies';
-import type { PolicyStatus } from '@/types';
 
 const statusOptions = [
   { value: '', label: 'All Status' },

@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { Navigation } from '@/components/layout/Navigation';
-import { EmergencyPanel, IncidentCard, mockIncidents } from '@/components/emergency/EmergencyPanel';
+import { IncidentCard, mockIncidents } from '@/components/emergency/EmergencyPanel';
 import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/Select';
 import { Modal } from '@/components/shared/Modal';
-import { cn, formatDateTime, getStatusColor } from '@/lib/utils';
-import type { Incident, EmergencyLevel, IncidentStatus } from '@/types';
+import { cn } from '@/lib/utils';
+import type { Incident } from '@/types';
 
 const levelOptions = [
   { value: '', label: 'All Levels' },

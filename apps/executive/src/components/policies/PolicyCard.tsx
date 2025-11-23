@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { cn, formatDate, getStatusColor, getProgressColor, formatPercentage } from '@/lib/utils';
+import { cn, formatDate, getStatusColor, getProgressColor } from '@/lib/utils';
 import type { Policy } from '@/types';
 
 interface PolicyCardProps {

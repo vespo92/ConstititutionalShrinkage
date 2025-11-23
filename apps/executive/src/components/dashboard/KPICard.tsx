@@ -1,6 +1,6 @@
 'use client';
 
-import { cn, getTrendIcon, getTrendColor, formatNumber, formatPercentage } from '@/lib/utils';
+import { cn, getTrendIcon, getTrendColor, formatNumber } from '@/lib/utils';
 import type { KPI } from '@/types';
 
 interface KPICardProps {

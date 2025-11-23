@@ -1,6 +1,6 @@
 'use client';
 
-import { cn, getTrendIcon, getTrendColor, formatPercentage } from '@/lib/utils';
+import { cn, getTrendIcon, getTrendColor } from '@/lib/utils';
 import type { TBLScore } from '@/types';
 
 interface TBLDashboardProps {

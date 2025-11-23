@@ -33,8 +33,7 @@ export default function RootLayout({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const handleLogout = () => {
-    // Handle logout
-    console.log('Logging out...');
+    // Handle logout - will be implemented with auth provider
   };
 
   return (

@@ -2,17 +2,40 @@
   "name": "@constitutional-shrinkage/executive",
   "version": "0.1.0",
   "private": true,
-  "description": "Decentralized executive functions - Regional execution with federal coordination",
-  "main": "src/index.ts",
+  "description": "Executive Dashboard - Regional pod administration, policy implementation, and TBL metrics tracking",
   "scripts": {
-    "dev": "echo 'Executive app dev server'",
-    "build": "echo 'Building executive app'",
-    "test": "echo 'Testing executive app'",
-    "lint": "echo 'Linting executive app'"
+    "dev": "next dev -p 3003",
+    "build": "next build",
+    "start": "next start -p 3003",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@constitutional-shrinkage/governance-utils": "*",
     "@constitutional-shrinkage/constitutional-framework": "*",
-    "@constitutional-shrinkage/metrics": "*"
+    "@constitutional-shrinkage/metrics": "*",
+    "@tanstack/react-query": "^5.17.0",
+    "clsx": "^2.1.0",
+    "date-fns": "^3.2.0",
+    "leaflet": "^1.9.4",
+    "next": "14.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.49.3",
+    "react-leaflet": "^4.2.1",
+    "recharts": "^2.10.4",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.8",
+    "@types/node": "^20.11.5",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "autoprefixer": "^10.4.17",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "14.1.0",
+    "postcss": "^8.4.33",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.3.3"
   }
 }

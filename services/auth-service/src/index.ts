@@ -3,95 +3,96 @@
  *
  * Handles authentication, authorization, and user verification
  * for the Constitutional Shrinkage platform.
+ *
+ * Exports middleware and utilities for use by other services (e.g., API Gateway).
  */
 
-import Fastify from 'fastify';
-import cors from '@fastify/cors';
-import jwt from '@fastify/jwt';
-import cookie from '@fastify/cookie';
+// ============================================================================
+// SERVER START
+// ============================================================================
 
-import { authRoutes } from './routes.js';
+import { startServer } from './app.js';
 
-const PORT = process.env.AUTH_PORT ? parseInt(process.env.AUTH_PORT) : 3002;
-const HOST = process.env.HOST || '0.0.0.0';
-const JWT_SECRET = process.env.JWT_SECRET || 'development-secret-change-in-production';
-const REFRESH_SECRET = process.env.REFRESH_SECRET || 'refresh-secret-change-in-production';
+// Start server if this is the main module
+startServer();
 
-async function buildServer() {
-  const fastify = Fastify({
-    logger: {
-      level: process.env.LOG_LEVEL || 'info',
-      transport: process.env.NODE_ENV === 'development'
-        ? { target: 'pino-pretty' }
-        : undefined,
-    },
-  });
+// ============================================================================
+// EXPORTS FOR API GATEWAY & OTHER SERVICES
+// ============================================================================
 
-  // CORS
-  await fastify.register(cors, {
-    origin: process.env.CORS_ORIGINS?.split(',') || ['http://localhost:3000'],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  });
+// Types
+export type {
+  TokenPayload,
+  RefreshTokenPayload,
+  TokenPair,
+  Session,
+  AuthUser,
+  UserProfile,
+  UserPreferences,
+  OAuthUserInfo,
+  OAuthTokens,
+} from './types/index.js';
 
-  // Cookies for refresh tokens
-  await fastify.register(cookie, {
-    secret: process.env.COOKIE_SECRET || 'cookie-secret-change-in-production',
-    parseOptions: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-    },
-  });
+export {
+  Role,
+  Permission,
+  VerificationLevel,
+  ROLE_PERMISSIONS,
+  OAuthProvider,
+} from './types/index.js';
 
-  // JWT - Access tokens
-  await fastify.register(jwt, {
-    secret: JWT_SECRET,
-    sign: { expiresIn: '15m' }, // Short-lived access tokens
-    namespace: 'access',
-  });
+// Middleware
+export {
+  authGuard,
+  optionalAuthGuard,
+  emailVerifiedGuard,
+  idVerifiedGuard,
+  fullKycGuard,
+  createAuthGuard,
+} from './middleware/auth-guard.js';
 
-  // JWT - Refresh tokens
-  await fastify.register(jwt, {
-    secret: REFRESH_SECRET,
-    sign: { expiresIn: '7d' }, // Longer-lived refresh tokens
-    namespace: 'refresh',
-  });
+export {
+  rbac,
+  rbacAny,
+  requireRole,
+  requireAdmin,
+  requireSuperAdmin,
+  requireLegislator,
+  requireJudge,
+  requireCitizen,
+  hasRole,
+  hasPermission,
+  hasAllPermissions,
+  hasAnyPermission,
+  getPermissionsForRoles,
+} from './middleware/rbac.js';
 
-  // Health check
-  fastify.get('/health', async () => ({
-    status: 'healthy',
-    service: 'auth-service',
-    timestamp: new Date().toISOString(),
-  }));
+export {
+  createRateLimit,
+  loginRateLimit,
+  registerRateLimit,
+  passwordResetRateLimit,
+  oauthRateLimit,
+  refreshRateLimit,
+  generalApiRateLimit,
+} from './middleware/rate-limit.js';
 
-  // Auth routes
-  await fastify.register(authRoutes, { prefix: '/auth' });
+// Token utilities
+export {
+  generateTokens,
+  verifyAccessToken,
+  verifyRefreshToken,
+  revokeRefreshToken,
+  revokeAllUserTokens,
+  extractBearerToken,
+} from './lib/tokens.js';
 
-  return fastify;
-}
+// Password utilities
+export {
+  hashPassword,
+  verifyPassword,
+  validatePasswordStrength,
+} from './lib/password.js';
 
-async function start() {
-  try {
-    const server = await buildServer();
-
-    await server.listen({ port: PORT, host: HOST });
-
-    console.log(`
-    ╔═══════════════════════════════════════════════════════════╗
-    ║       Constitutional Shrinkage Auth Service               ║
-    ╠═══════════════════════════════════════════════════════════╣
-    ║  Status:     Running                                      ║
-    ║  Port:       ${PORT}                                          ║
-    ║  Health:     http://localhost:${PORT}/health                  ║
-    ╚═══════════════════════════════════════════════════════════╝
-    `);
-  } catch (err) {
-    console.error('Failed to start auth service:', err);
-    process.exit(1);
-  }
-}
-
-start();
-
-export { buildServer };
+// App builder (for testing or custom deployments)
+export { buildApp, startServer } from './app.js';

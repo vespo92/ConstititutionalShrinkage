@@ -1,0 +1,43 @@
+{
+  "name": "@constitutional-shrinkage/community-service",
+  "version": "1.0.0",
+  "description": "Community engagement backend service - discussions, petitions, town halls, and moderation",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint src/",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@fastify/cors": "^9.0.1",
+    "@fastify/helmet": "^11.1.1",
+    "@fastify/jwt": "^8.0.0",
+    "@fastify/rate-limit": "^9.1.0",
+    "@fastify/swagger": "^8.14.0",
+    "@fastify/swagger-ui": "^3.0.0",
+    "@fastify/websocket": "^9.0.0",
+    "fastify": "^4.26.0",
+    "ioredis": "^5.3.2",
+    "socket.io": "^4.7.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.2.0"
+  },
+  "peerDependencies": {
+    "@constitutional-shrinkage/entity-registry": "^1.0.0",
+    "@constitutional-shrinkage/moderation": "^1.0.0",
+    "@constitutional-shrinkage/governance-utils": "^1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@constitutional-shrinkage/entity-registry": { "optional": true },
+    "@constitutional-shrinkage/moderation": { "optional": true },
+    "@constitutional-shrinkage/governance-utils": { "optional": true }
+  }
+}

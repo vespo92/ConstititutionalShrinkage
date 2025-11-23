@@ -31,6 +31,10 @@ export interface VoteSummary {
   total: number;
   quorumMet: boolean;
   approvalThresholdMet: boolean;
+  weightedFor?: number;
+  weightedAgainst?: number;
+  weightedAbstain?: number;
+  passed?: boolean;
 }
 
 export interface BillDiff {

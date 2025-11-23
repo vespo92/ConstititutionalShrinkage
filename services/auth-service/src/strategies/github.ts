@@ -4,7 +4,7 @@
  * Handles GitHub OAuth2 authentication flow.
  */
 
-import type { OAuthUserInfo, OAuthTokens } from '../types/index.js';
+import { OAuthProvider, type OAuthUserInfo, type OAuthTokens } from '../types/index.js';
 
 // Configuration
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID || '';
@@ -68,7 +68,7 @@ export async function exchangeGitHubCode(code: string): Promise<OAuthTokens> {
     throw new Error('Failed to exchange authorization code');
   }
 
-  const data = await response.json();
+  const data = await response.json() as any;
 
   if (data.error) {
     console.error('GitHub OAuth error:', data.error_description || data.error);
@@ -152,7 +152,7 @@ export async function getGitHubUserInfo(
   }
 
   return {
-    provider: 'github' as const,
+    provider: OAuthProvider.GITHUB as const,
     providerId: userData.id.toString(),
     email,
     name: userData.name || userData.login,
@@ -233,7 +233,7 @@ export async function getGitHubRateLimit(
 
     if (!response.ok) return null;
 
-    const data = await response.json();
+    const data = await response.json() as any;
     return {
       limit: data.rate.limit,
       remaining: data.rate.remaining,

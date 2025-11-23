@@ -7,9 +7,9 @@ const nextConfig = {
     '@constitutional-shrinkage/constitutional-framework',
     '@constitutional-shrinkage/entity-registry',
   ],
-  experimental: {
-    typedRoutes: true,
-  },
+  // experimental: {
+  //   typedRoutes: true,
+  // },
 };
 
 module.exports = nextConfig;

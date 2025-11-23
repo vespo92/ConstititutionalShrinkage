@@ -75,7 +75,7 @@ async function buildServer() {
       reply.status(400).send({
         error: 'Validation Error',
         code: 'VALIDATION_ERROR',
-        details: error.issues,
+        details: (error as any).issues,
       });
       return;
     }

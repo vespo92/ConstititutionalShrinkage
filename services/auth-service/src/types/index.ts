@@ -283,7 +283,13 @@ export interface MessageResponse {
 
 declare module 'fastify' {
   interface FastifyRequest {
-    user?: TokenPayload;
+    authPayload?: TokenPayload;
+  }
+  interface FastifySchema {
+    tags?: string[];
+    summary?: string;
+    security?: Array<Record<string, string[]>>;
+    description?: string;
   }
 }
 

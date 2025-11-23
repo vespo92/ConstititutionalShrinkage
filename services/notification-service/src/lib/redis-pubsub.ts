@@ -4,7 +4,7 @@
  * Redis-based pub/sub for horizontal scaling of notifications.
  */
 
-import Redis from 'ioredis';
+import { Redis } from 'ioredis';
 
 export interface NotificationEvent {
   userId: string;

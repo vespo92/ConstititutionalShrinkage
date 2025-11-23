@@ -109,7 +109,6 @@ export class ProgressiveTaxSystem {
           incomeInBracket = Math.max(0, taxableIncome - bracket.floor);
         } else {
           // Calculate income in this bracket
-          const bracketMax = bracket.ceiling - bracket.floor;
           incomeInBracket = Math.min(
             remainingIncome,
             Math.max(0, Math.min(taxableIncome, bracket.ceiling) - bracket.floor)

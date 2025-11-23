@@ -5,7 +5,8 @@
   "description": "A git-style decentralized government implementation using turborepo",
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "services/*"
   ],
   "scripts": {
     "dev": "turbo run dev",

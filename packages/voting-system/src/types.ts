@@ -55,6 +55,7 @@ export interface VoteResults {
   weightedAbstain: number;
   quorumMet: boolean;
   passed: boolean;
+  approvalThresholdMet: boolean;
 }
 
 export interface Delegation {

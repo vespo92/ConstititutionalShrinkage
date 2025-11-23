@@ -161,7 +161,7 @@ export async function castVote(data: VoteCastData): Promise<VoteResults> {
   bill.votes.quorumMet = bill.votes.total >= 100;
   bill.votes.approvalThresholdMet = bill.votes.for / bill.votes.total >= 0.6;
 
-  return bill.votes;
+  return bill.votes as VoteResults;
 }
 
 /**

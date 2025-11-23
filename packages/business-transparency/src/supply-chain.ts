@@ -135,7 +135,6 @@ export interface EnvironmentalImpact {
 
 export class SupplyChainTransparencySystem {
   private supplyChains: Map<string, SupplyChain> = new Map();
-  private businesses: Map<string, BusinessEntity> = new Map();
 
   /**
    * Register a complete supply chain for a product
@@ -190,7 +189,7 @@ export class SupplyChainTransparencySystem {
   }): SupplyChain[] {
     const results: SupplyChain[] = [];
 
-    for (const [id, chain] of this.supplyChains) {
+    for (const [_id, chain] of this.supplyChains) {
       let matches = true;
 
       if (criteria.maxDistance && chain.totalDistanceTraveled > criteria.maxDistance) {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import type { Citizen, VerificationLevel } from '@/lib/types';
+import { VerificationLevel, type Citizen } from '@/lib/types';
 import { citizenApi } from '@/lib/api';
 
 interface AuthState {
@@ -90,11 +90,11 @@ export function useVerificationRequired(requiredLevel: VerificationLevel): {
 } {
   const { verificationLevel } = useAuth();
 
-  const levelOrder: VerificationLevel[] = [
-    'UNVERIFIED',
-    'BASIC',
-    'BIOMETRIC',
-    'FULL',
+  const levelOrder = [
+    VerificationLevel.UNVERIFIED,
+    VerificationLevel.BASIC,
+    VerificationLevel.BIOMETRIC,
+    VerificationLevel.FULL,
   ];
 
   const currentIndex = verificationLevel

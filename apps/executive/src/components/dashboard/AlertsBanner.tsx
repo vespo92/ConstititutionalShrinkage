@@ -55,7 +55,7 @@ export function AlertsBanner({ alerts, onDismiss }: AlertsBannerProps) {
   const visibleAlerts = alerts.filter((alert) => !dismissedIds.has(alert.id));
 
   const handleDismiss = (alertId: string) => {
-    setDismissedIds((prev) => new Set([...prev, alertId]));
+    setDismissedIds((prev) => new Set([...Array.from(prev), alertId]));
     onDismiss?.(alertId);
   };
 

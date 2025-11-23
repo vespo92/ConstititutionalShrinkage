@@ -61,7 +61,9 @@ export interface TokenPayload {
 }
 
 declare module 'fastify' {
-  interface FastifyRequest {
-    user?: TokenPayload;
+  interface FastifySchema {
+    tags?: string[];
+    summary?: string;
+    security?: Array<Record<string, string[]>>;
   }
 }

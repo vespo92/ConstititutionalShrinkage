@@ -145,7 +145,7 @@ function VoteBar({ label, percentage, color, count }: VoteBarProps) {
 }
 
 interface VoteButtonProps {
-  icon: React.FC<{ size?: number; className?: string }>;
+  icon: React.FC<{ size?: number | string; className?: string }>;
   label: string;
   selected: boolean;
   onClick: () => void;

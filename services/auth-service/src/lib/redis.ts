@@ -4,7 +4,7 @@
  * Session storage, token blacklisting, and rate limiting.
  */
 
-import Redis from 'ioredis';
+import { Redis } from 'ioredis';
 import type { Session } from '../types/index.js';
 
 // Redis client singleton

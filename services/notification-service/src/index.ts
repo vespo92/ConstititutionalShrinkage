@@ -7,7 +7,7 @@
 
 import Fastify from 'fastify';
 import { Server } from 'socket.io';
-import Redis from 'ioredis';
+import { Redis } from 'ioredis';
 import { createServer } from 'http';
 
 import { EmailChannel } from './channels/email.js';

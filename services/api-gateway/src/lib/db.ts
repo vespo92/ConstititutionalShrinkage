@@ -4,7 +4,7 @@
  * PostgreSQL and Redis connection management.
  */
 
-import Redis from 'ioredis';
+import { Redis } from 'ioredis';
 
 // Redis client for caching and sessions
 let redisClient: Redis | null = null;

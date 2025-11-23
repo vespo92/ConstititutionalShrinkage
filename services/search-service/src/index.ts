@@ -7,7 +7,7 @@
 
 import Fastify from 'fastify';
 import { Client } from '@elastic/elasticsearch';
-import Redis from 'ioredis';
+import { Redis } from 'ioredis';
 
 import { BillIndexer } from './indexers/bills.js';
 import { PeopleIndexer } from './indexers/people.js';

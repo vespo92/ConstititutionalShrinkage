@@ -21,7 +21,7 @@
   "author": "Constitutional Shrinkage Contributors",
   "license": "MIT",
   "dependencies": {
-    "@constitutional-shrinkage/constitutional-framework": "workspace:*"
+    "@constitutional-shrinkage/constitutional-framework": "*"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

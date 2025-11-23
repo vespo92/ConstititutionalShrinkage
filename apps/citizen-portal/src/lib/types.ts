@@ -6,18 +6,18 @@
  */
 
 // Re-export types from packages for convenience
-export type {
-  Vote,
-  VoteChoice,
-  VotingSession,
-  VotingStatus,
-  QuorumRules,
-  VoteResults,
-  Delegation,
-  DelegationScope,
-  Citizen,
+export {
   VerificationLevel,
-  VotingStats,
+  type Vote,
+  type VoteChoice,
+  type VotingSession,
+  type VotingStatus,
+  type QuorumRules,
+  type VoteResults,
+  type Delegation,
+  type DelegationScope,
+  type Citizen,
+  type VotingStats,
 } from '@constitutional-shrinkage/voting-system';
 
 // ============================================

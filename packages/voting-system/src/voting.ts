@@ -198,6 +198,11 @@ export class VotingSystem {
         ? weightedFor / (weightedFor + weightedAgainst) >= quorum.approvalThreshold
         : false;
 
+    const approvalThresholdMet =
+      quorum
+        ? weightedFor / (weightedFor + weightedAgainst) >= quorum.approvalThreshold
+        : false;
+
     return {
       for: forCount,
       against: againstCount,
@@ -208,6 +213,7 @@ export class VotingSystem {
       weightedAbstain,
       quorumMet,
       passed,
+      approvalThresholdMet,
     };
   }
 
@@ -235,6 +241,7 @@ export class VotingSystem {
         weightedAbstain: 0,
         quorumMet: false,
         passed: false,
+        approvalThresholdMet: false,
       },
       participationRate: 0,
       status: VotingStatus.PENDING,

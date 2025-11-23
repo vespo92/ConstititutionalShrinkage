@@ -1,5 +1,5 @@
 {
-  "name": "@constitutional/entity-registry",
+  "name": "@constitutional-shrinkage/entity-registry",
   "version": "0.1.0",
   "description": ".git for Government - Complete tracking of WHO did WHAT, WHEN, and WHY",
   "main": "dist/index.js",

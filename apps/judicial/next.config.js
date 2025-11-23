@@ -7,7 +7,7 @@ const nextConfig = {
     '@constitutional-shrinkage/entity-registry',
   ],
   experimental: {
-    typedRoutes: true,
+    // typedRoutes: true,
   },
 };
 

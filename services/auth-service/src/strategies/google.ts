@@ -4,7 +4,7 @@
  * Handles Google OAuth2 authentication flow.
  */
 
-import type { OAuthUserInfo, OAuthTokens } from '../types/index.js';
+import { OAuthProvider, type OAuthUserInfo, type OAuthTokens } from '../types/index.js';
 
 // Configuration
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
@@ -73,7 +73,7 @@ export async function exchangeGoogleCode(code: string): Promise<OAuthTokens> {
     throw new Error('Failed to exchange authorization code');
   }
 
-  const data = await response.json();
+  const data = await response.json() as any;
 
   return {
     accessToken: data.access_token,
@@ -102,10 +102,10 @@ export async function getGoogleUserInfo(
     throw new Error('Failed to get user information from Google');
   }
 
-  const data = await response.json();
+  const data = await response.json() as any;
 
   return {
-    provider: 'google' as const,
+    provider: OAuthProvider.GOOGLE,
     providerId: data.id,
     email: data.email,
     name: data.name,
@@ -160,7 +160,7 @@ export async function refreshGoogleToken(
     throw new Error('Failed to refresh Google token');
   }
 
-  const data = await response.json();
+  const data = await response.json() as any;
 
   return {
     accessToken: data.access_token,
@@ -186,7 +186,7 @@ export async function validateGoogleIdToken(
       return null;
     }
 
-    const data = await response.json();
+    const data = await response.json() as any;
 
     // Verify the token is for our app
     if (data.aud !== GOOGLE_CLIENT_ID) {
@@ -201,7 +201,7 @@ export async function validateGoogleIdToken(
     }
 
     return {
-      provider: 'google' as const,
+      provider: OAuthProvider.GOOGLE,
       providerId: data.sub,
       email: data.email,
       name: data.name,

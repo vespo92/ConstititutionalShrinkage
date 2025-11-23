@@ -5,7 +5,7 @@
  */
 
 import webpush from 'web-push';
-import Redis from 'ioredis';
+import { Redis } from 'ioredis';
 
 export interface PushNotification {
   title: string;

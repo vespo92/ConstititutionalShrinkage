@@ -201,7 +201,7 @@ export class BusinessTransparencySystem {
   getPersonnelHistory(citizenId: string, businessId?: string): PersonnelRecord[] {
     const records: PersonnelRecord[] = [];
 
-    for (const [key, record] of this.personnelRecords) {
+    for (const [_key, record] of this.personnelRecords) {
       if (record.citizenId === citizenId) {
         if (!businessId || record.businessId === businessId) {
           records.push(record);
@@ -219,7 +219,7 @@ export class BusinessTransparencySystem {
   getBusinessEmploymentHistory(businessId: string): PersonnelRecord[] {
     const records: PersonnelRecord[] = [];
 
-    for (const [key, record] of this.personnelRecords) {
+    for (const [_key, record] of this.personnelRecords) {
       if (record.businessId === businessId) {
         records.push(record);
       }
@@ -320,7 +320,7 @@ export class BusinessTransparencySystem {
   }): EmploymentEvent[] {
     const results: EmploymentEvent[] = [];
 
-    for (const [key, record] of this.personnelRecords) {
+    for (const [_key, record] of this.personnelRecords) {
       // Filter by business if specified
       if (query.businessId && record.businessId !== query.businessId) {
         continue;

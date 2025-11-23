@@ -71,7 +71,7 @@ export const api = {
   policies: {
     list: (filters?: PolicyFilters) =>
       request<PaginatedResponse<Policy>>(
-        `/api/v1/policies${buildQueryString(filters || {})}`
+        `/api/v1/policies${buildQueryString((filters || {}) as Record<string, unknown>)}`
       ),
     get: (id: string) =>
       request<ApiResponse<Policy>>(`/api/v1/policies/${id}`),
@@ -106,7 +106,7 @@ export const api = {
       request<ApiResponse<TBLScore>>(`/api/v1/metrics/tbl/${entityId}`),
     getTBLHistory: (entityId: string, filters?: MetricFilters) =>
       request<ApiResponse<TBLScore[]>>(
-        `/api/v1/metrics/tbl/${entityId}/history${buildQueryString(filters || {})}`
+        `/api/v1/metrics/tbl/${entityId}/history${buildQueryString((filters || {}) as Record<string, unknown>)}`
       ),
     getKPIs: (regionId?: string) =>
       request<ApiResponse<KPI[]>>(

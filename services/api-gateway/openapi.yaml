@@ -1,0 +1,697 @@
+openapi: 3.0.3
+info:
+  title: Constitutional Shrinkage API
+  description: |
+    API for the git-style decentralized government platform.
+
+    ## Features
+    - **Bills Management**: Git-style legislation with versioning, forking, and diffs
+    - **Voting System**: Cryptographically verifiable votes with liquid democracy
+    - **Delegations**: Liquid democracy delegation chains
+    - **Metrics**: Triple Bottom Line (People, Planet, Profit) scoring
+    - **Organizations**: Business transparency and lobbying disclosure
+    - **Regions**: Hierarchical governance regions
+
+    ## Authentication
+    Most endpoints require JWT authentication via Bearer token.
+
+  version: 1.0.0
+  contact:
+    name: Constitutional Shrinkage Team
+    url: https://github.com/vespo92/ConstititutionalShrinkage
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3001
+    description: Development
+  - url: https://api.constitutional-shrinkage.gov
+    description: Production
+
+tags:
+  - name: Bills
+    description: Legislation management with git-style versioning
+  - name: Votes
+    description: Voting operations and verification
+  - name: Delegations
+    description: Liquid democracy delegation management
+  - name: Metrics
+    description: Triple Bottom Line metrics and analytics
+  - name: Regions
+    description: Regional governance and hierarchy
+  - name: Persons
+    description: Public person information
+  - name: Organizations
+    description: Organization transparency and lobbying
+  - name: Users
+    description: User profile management
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  timestamp:
+                    type: string
+                    format: date-time
+                  version:
+                    type: string
+                    example: 1.0.0
+
+  # Bills endpoints
+  /api/v1/bills:
+    get:
+      tags: [Bills]
+      summary: List bills with filters
+      operationId: listBills
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/BillStatus'
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: region
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of bills
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillListResponse'
+    post:
+      tags: [Bills]
+      summary: Create a new bill
+      operationId: createBill
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBillRequest'
+      responses:
+        '201':
+          description: Bill created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateBillResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/bills/{id}:
+    get:
+      tags: [Bills]
+      summary: Get bill details
+      operationId: getBill
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Bill details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bill'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Bills]
+      summary: Update a bill
+      operationId: updateBill
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBillRequest'
+      responses:
+        '200':
+          description: Bill updated
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      tags: [Bills]
+      summary: Delete a draft bill
+      operationId: deleteBill
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '204':
+          description: Bill deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/bills/{id}/fork:
+    post:
+      tags: [Bills]
+      summary: Fork a bill (git-style)
+      operationId: forkBill
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '201':
+          description: Bill forked
+
+  /api/v1/bills/{id}/history:
+    get:
+      tags: [Bills]
+      summary: Get bill version history
+      operationId: getBillHistory
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Version history
+
+  /api/v1/bills/{id}/compliance:
+    get:
+      tags: [Bills]
+      summary: Constitutional compliance check
+      operationId: checkCompliance
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Compliance report
+
+  # Votes endpoints
+  /api/v1/votes:
+    post:
+      tags: [Votes]
+      summary: Cast a vote
+      operationId: castVote
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CastVoteRequest'
+      responses:
+        '201':
+          description: Vote cast successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoteReceipt'
+
+  /api/v1/votes/verify/{proof}:
+    get:
+      tags: [Votes]
+      summary: Verify vote cryptographic proof
+      operationId: verifyVote
+      parameters:
+        - name: proof
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Verification result
+
+  /api/v1/votes/history:
+    get:
+      tags: [Votes]
+      summary: Get voting history
+      operationId: getVotingHistory
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: Voting history
+
+  # Delegations endpoints
+  /api/v1/delegations:
+    get:
+      tags: [Delegations]
+      summary: List user's delegations
+      operationId: listDelegations
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: direction
+          in: query
+          schema:
+            type: string
+            enum: [outgoing, incoming, both]
+            default: both
+      responses:
+        '200':
+          description: User delegations
+    post:
+      tags: [Delegations]
+      summary: Create a delegation
+      operationId: createDelegation
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDelegationRequest'
+      responses:
+        '201':
+          description: Delegation created
+
+  /api/v1/delegations/{id}:
+    delete:
+      tags: [Delegations]
+      summary: Revoke a delegation
+      operationId: revokeDelegation
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '204':
+          description: Delegation revoked
+
+  /api/v1/delegations/{id}/chain:
+    get:
+      tags: [Delegations]
+      summary: Get delegation chain
+      operationId: getDelegationChain
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Delegation chain
+
+  # Metrics endpoints
+  /api/v1/metrics/tbl/{entityId}:
+    get:
+      tags: [Metrics]
+      summary: Get Triple Bottom Line score
+      operationId: getTBLScore
+      parameters:
+        - name: entityId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: TBL scores
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TBLScore'
+
+  /api/v1/metrics/sunset:
+    get:
+      tags: [Metrics]
+      summary: Get bills nearing sunset
+      operationId: getSunsetBills
+      parameters:
+        - name: days
+          in: query
+          schema:
+            type: integer
+            default: 90
+      responses:
+        '200':
+          description: Expiring bills
+
+  /api/v1/metrics/dashboard:
+    get:
+      tags: [Metrics]
+      summary: Get metrics dashboard
+      operationId: getMetricsDashboard
+      parameters:
+        - name: region
+          in: query
+          schema:
+            type: string
+        - name: timeframe
+          in: query
+          schema:
+            type: string
+            enum: [7d, 30d, 90d, 1y, all]
+      responses:
+        '200':
+          description: Dashboard data
+
+  # Regions endpoints
+  /api/v1/regions:
+    get:
+      tags: [Regions]
+      summary: List regions
+      operationId: listRegions
+      parameters:
+        - name: level
+          in: query
+          schema:
+            type: string
+            enum: [FEDERAL, REGIONAL, LOCAL]
+      responses:
+        '200':
+          description: List of regions
+
+  /api/v1/regions/{id}:
+    get:
+      tags: [Regions]
+      summary: Get region details
+      operationId: getRegion
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Region details
+
+  # Persons endpoints
+  /api/v1/persons/{id}:
+    get:
+      tags: [Persons]
+      summary: Get person public info
+      operationId: getPerson
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Person public info
+
+  # Organizations endpoints
+  /api/v1/organizations:
+    get:
+      tags: [Organizations]
+      summary: List organizations
+      operationId: listOrganizations
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - name: type
+          in: query
+          schema:
+            $ref: '#/components/schemas/OrganizationType'
+      responses:
+        '200':
+          description: List of organizations
+
+  /api/v1/organizations/{id}:
+    get:
+      tags: [Organizations]
+      summary: Get organization details
+      operationId: getOrganization
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Organization details
+
+  /api/v1/organizations/{id}/transparency:
+    get:
+      tags: [Organizations]
+      summary: Get transparency report
+      operationId: getTransparencyReport
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Transparency report
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        default: 20
+        minimum: 1
+        maximum: 100
+
+  schemas:
+    BillStatus:
+      type: string
+      enum: [DRAFT, IN_COMMITTEE, SCHEDULED, VOTING, PASSED, REJECTED, ACTIVE, EXPIRED]
+
+    LegislationLevel:
+      type: string
+      enum: [IMMUTABLE, FEDERAL, REGIONAL, LOCAL]
+
+    VoteChoice:
+      type: string
+      enum: [for, against, abstain]
+
+    DelegationScope:
+      type: string
+      enum: [ALL, CATEGORY, SINGLE_BILL]
+
+    OrganizationType:
+      type: string
+      enum: [CORPORATION, NON_PROFIT, GOVERNMENT, UNION, PAC, OTHER]
+
+    Bill:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        content:
+          type: string
+        level:
+          $ref: '#/components/schemas/LegislationLevel'
+        status:
+          $ref: '#/components/schemas/BillStatus'
+        regionId:
+          type: string
+          format: uuid
+        categoryId:
+          type: string
+        sponsorId:
+          type: string
+          format: uuid
+        version:
+          type: integer
+        sunsetDate:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateBillRequest:
+      type: object
+      required: [title, content, level, categoryId]
+      properties:
+        title:
+          type: string
+          minLength: 5
+          maxLength: 200
+        content:
+          type: string
+          minLength: 10
+        level:
+          $ref: '#/components/schemas/LegislationLevel'
+        regionId:
+          type: string
+          format: uuid
+        categoryId:
+          type: string
+        sunsetYears:
+          type: integer
+          minimum: 1
+          maximum: 20
+          default: 5
+
+    UpdateBillRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+
+    CreateBillResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        message:
+          type: string
+
+    BillListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Bill'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    CastVoteRequest:
+      type: object
+      required: [billId, choice]
+      properties:
+        billId:
+          type: string
+          format: uuid
+        choice:
+          $ref: '#/components/schemas/VoteChoice'
+        isPublic:
+          type: boolean
+          default: false
+
+    VoteReceipt:
+      type: object
+      properties:
+        voteId:
+          type: string
+        billId:
+          type: string
+        choice:
+          $ref: '#/components/schemas/VoteChoice'
+        weight:
+          type: number
+        receipt:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+    CreateDelegationRequest:
+      type: object
+      required: [delegateId, scope]
+      properties:
+        delegateId:
+          type: string
+          format: uuid
+        scope:
+          $ref: '#/components/schemas/DelegationScope'
+        category:
+          type: string
+        billId:
+          type: string
+          format: uuid
+        expiresAt:
+          type: string
+          format: date-time
+
+    TBLScore:
+      type: object
+      properties:
+        entityId:
+          type: string
+        scores:
+          type: object
+          properties:
+            people:
+              type: number
+            planet:
+              type: number
+            profit:
+              type: number
+            composite:
+              type: number
+        timestamp:
+          type: string
+          format: date-time
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        requestId:
+          type: string
+
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

@@ -35,5 +35,13 @@
     "@constitutional-shrinkage/metrics": "^1.0.0",
     "@constitutional-shrinkage/entity-registry": "^1.0.0",
     "@constitutional-shrinkage/business-transparency": "^1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@constitutional-shrinkage/constitutional-framework": { "optional": true },
+    "@constitutional-shrinkage/voting-system": { "optional": true },
+    "@constitutional-shrinkage/governance-utils": { "optional": true },
+    "@constitutional-shrinkage/metrics": { "optional": true },
+    "@constitutional-shrinkage/entity-registry": { "optional": true },
+    "@constitutional-shrinkage/business-transparency": { "optional": true }
   }
 }

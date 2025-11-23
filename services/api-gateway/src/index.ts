@@ -18,6 +18,9 @@ import { voteRoutes } from './routes/votes.js';
 import { userRoutes } from './routes/users.js';
 import { delegationRoutes } from './routes/delegations.js';
 import { regionRoutes } from './routes/regions.js';
+import { metricsRoutes } from './routes/metrics.js';
+import { personRoutes } from './routes/persons.js';
+import { organizationRoutes } from './routes/organizations.js';
 import { authMiddleware } from './middleware/auth.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -89,6 +92,9 @@ async function buildServer() {
         { name: 'Users', description: 'User management' },
         { name: 'Delegations', description: 'Liquid democracy delegations' },
         { name: 'Regions', description: 'Regional governance' },
+        { name: 'Metrics', description: 'Triple Bottom Line metrics' },
+        { name: 'Persons', description: 'Public person information' },
+        { name: 'Organizations', description: 'Organization transparency' },
       ],
       components: {
         securitySchemes: {
@@ -136,7 +142,17 @@ async function buildServer() {
     version: '1.0.0',
   }));
 
-  // Register routes
+  // Register routes - v1 API
+  await fastify.register(billRoutes, { prefix: '/api/v1/bills' });
+  await fastify.register(voteRoutes, { prefix: '/api/v1/votes' });
+  await fastify.register(userRoutes, { prefix: '/api/v1/users' });
+  await fastify.register(delegationRoutes, { prefix: '/api/v1/delegations' });
+  await fastify.register(regionRoutes, { prefix: '/api/v1/regions' });
+  await fastify.register(metricsRoutes, { prefix: '/api/v1/metrics' });
+  await fastify.register(personRoutes, { prefix: '/api/v1/persons' });
+  await fastify.register(organizationRoutes, { prefix: '/api/v1/organizations' });
+
+  // Also register without version prefix for backwards compatibility
   await fastify.register(billRoutes, { prefix: '/api/bills' });
   await fastify.register(voteRoutes, { prefix: '/api/votes' });
   await fastify.register(userRoutes, { prefix: '/api/users' });

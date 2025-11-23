@@ -16,7 +16,7 @@ export function getRedisClient(): Redis {
       port: parseInt(process.env.REDIS_PORT || '6379'),
       password: process.env.REDIS_PASSWORD,
       db: parseInt(process.env.REDIS_DB || '0'),
-      retryDelayOnFailover: 100,
+      retryStrategy: (times) => Math.min(times * 100, 3000),
       maxRetriesPerRequest: 3,
     });
 

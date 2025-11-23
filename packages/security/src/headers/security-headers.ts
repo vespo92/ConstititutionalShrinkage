@@ -25,13 +25,13 @@ export interface SecurityHeadersConfig {
     maxAge?: number;
     includeSubDomains?: boolean;
     preload?: boolean;
-  };
+  } | false;
   csp?: {
     directives?: Record<string, string | string[]>;
     reportUri?: string;
     reportOnly?: boolean;
   };
-  frameOptions?: 'DENY' | 'SAMEORIGIN' | { allowFrom: string };
+  frameOptions?: 'DENY' | 'SAMEORIGIN' | { allowFrom: string } | false;
   referrerPolicy?: string;
   permissionsPolicy?: Record<string, string[]>;
   noSniff?: boolean;

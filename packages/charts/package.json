@@ -1,0 +1,28 @@
+{
+  "name": "@constitutional-shrinkage/charts",
+  "version": "0.1.0",
+  "description": "Shared chart components for Constitutional Shrinkage analytics",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "echo 'Building charts package'",
+    "test": "vitest",
+    "lint": "eslint src/"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "dependencies": {
+    "recharts": "^2.10.0",
+    "d3": "^7.8.0",
+    "clsx": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.2.0"
+  }
+}

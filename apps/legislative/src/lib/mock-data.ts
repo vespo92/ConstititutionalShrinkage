@@ -5,7 +5,7 @@
 
 import type { Bill } from '@constitutional-shrinkage/governance-utils';
 import { GovernanceLevel, LawStatus } from '@constitutional-shrinkage/constitutional-framework';
-import type { Citizen, VerificationLevel, DelegationScope } from '@constitutional-shrinkage/voting-system';
+import type { Citizen, VerificationLevel } from '@constitutional-shrinkage/voting-system';
 
 export const mockCitizen: Citizen = {
   id: 'citizen-001',

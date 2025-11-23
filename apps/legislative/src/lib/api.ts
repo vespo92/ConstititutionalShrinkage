@@ -14,7 +14,7 @@ import {
   mergeBill,
   addCoSponsor,
 } from '@constitutional-shrinkage/governance-utils';
-import { GovernanceLevel, LawStatus } from '@constitutional-shrinkage/constitutional-framework';
+import { LawStatus } from '@constitutional-shrinkage/constitutional-framework';
 import type {
   Bill,
   BillFormData,
@@ -34,7 +34,7 @@ import { mockBills, mockCitizen } from './mock-data';
 const simulateDelay = (ms: number = 300) => new Promise(resolve => setTimeout(resolve, ms));
 
 // In-memory storage (will be replaced with real API)
-let bills: Bill[] = [...mockBills];
+const bills: Bill[] = [...mockBills];
 
 /**
  * Fetch all bills with optional filters
@@ -214,7 +214,7 @@ export async function checkConstitutionalCompliance(billId: string): Promise<Con
 /**
  * Get impact assessment for a bill
  */
-export async function getImpactAssessment(billId: string): Promise<ImpactAssessment> {
+export async function getImpactAssessment(_billId: string): Promise<ImpactAssessment> {
   await simulateDelay(1000);
 
   // Mock impact assessment (in production would use metrics package)

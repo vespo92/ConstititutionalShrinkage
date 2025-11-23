@@ -1,0 +1,131 @@
+# Constitutional Shrinkage - Blockchain Service Deployment
+# Agent_B: Blockchain Voting Verification Layer
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blockchain-service
+  namespace: constitutional
+  labels:
+    app: blockchain-service
+    app.kubernetes.io/name: blockchain-service
+    app.kubernetes.io/component: blockchain
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: blockchain-service
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: blockchain-service
+        app.kubernetes.io/name: blockchain-service
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3006"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: default
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
+      containers:
+        - name: blockchain-service
+          image: blockchain-service:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 3006
+              protocol: TCP
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: NODE_ENV
+            - name: PORT
+              value: "3006"
+            - name: ETHEREUM_RPC_URL
+              valueFrom:
+                secretKeyRef:
+                  name: blockchain-credentials
+                  key: rpc-url
+            - name: SERVER_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: blockchain-credentials
+                  key: private-key
+            - name: VOTING_REGISTRY_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: blockchain-config
+                  key: voting-registry-address
+            - name: VOTE_VERIFIER_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: blockchain-config
+                  key: vote-verifier-address
+            - name: DELEGATION_REGISTRY_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: blockchain-config
+                  key: delegation-registry-address
+            - name: BILL_REGISTRY_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: blockchain-config
+                  key: bill-registry-address
+            - name: AUDIT_TRAIL_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: blockchain-config
+                  key: audit-trail-address
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: redis-url
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3006
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3006
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: blockchain-service
+                topologyKey: kubernetes.io/hostname

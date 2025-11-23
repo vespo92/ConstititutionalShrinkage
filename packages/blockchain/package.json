@@ -1,0 +1,25 @@
+{
+  "name": "@constitutional-shrinkage/blockchain",
+  "version": "1.0.0",
+  "description": "Blockchain SDK for Constitutional Shrinkage voting verification",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "test": "vitest",
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "ethers": "^6.10.0",
+    "merkletreejs": "^0.3.11"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.2.0"
+  },
+  "peerDependencies": {
+    "ethers": "^6.0.0"
+  }
+}

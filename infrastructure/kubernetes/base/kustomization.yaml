@@ -16,6 +16,7 @@ resources:
   - notification-service
   - search-service
   - citizen-portal
+  - blockchain-service
 
 commonLabels:
   app.kubernetes.io/part-of: constitutional-shrinkage

@@ -1,0 +1,21 @@
+# Constitutional Shrinkage - Blockchain Service
+# Agent_B: Blockchain Voting Verification Layer
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-service
+  namespace: constitutional
+  labels:
+    app: blockchain-service
+    app.kubernetes.io/name: blockchain-service
+    app.kubernetes.io/component: blockchain
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 3006
+      targetPort: 3006
+      protocol: TCP
+  selector:
+    app: blockchain-service

@@ -1,0 +1,23 @@
+# Constitutional Shrinkage - Blockchain Service ConfigMap
+# Agent_B: Blockchain Voting Verification Layer
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blockchain-config
+  namespace: constitutional
+  labels:
+    app: blockchain-service
+    app.kubernetes.io/name: blockchain-service
+data:
+  # Contract addresses - Update after deployment
+  voting-registry-address: "0x0000000000000000000000000000000000000000"
+  vote-verifier-address: "0x0000000000000000000000000000000000000000"
+  delegation-registry-address: "0x0000000000000000000000000000000000000000"
+  bill-registry-address: "0x0000000000000000000000000000000000000000"
+  audit-trail-address: "0x0000000000000000000000000000000000000000"
+  # Chain configuration
+  chain-id: "11155420"  # Optimism Sepolia
+  # Service configuration
+  log-level: "info"
+  cors-origin: "*"

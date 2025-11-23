@@ -1,0 +1,14 @@
+# Constitutional Shrinkage - Blockchain Service Kustomization
+# Agent_B: Blockchain Voting Verification Layer
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - configmap.yaml
+
+commonLabels:
+  app.kubernetes.io/part-of: constitutional-shrinkage
+  app.kubernetes.io/component: blockchain
